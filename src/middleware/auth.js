@@ -1,4 +1,9 @@
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require('mongoose');
+
+const isValidObjectId = function (objectId) {
+    return mongoose.Types.ObjectId.isValid(objectId)
+}
 
 
 //----- authentication process to validate the person ----------------------------------------//
@@ -30,6 +35,9 @@ const authorization = async function (req, res, next) {
     try {
 
         let id = req.query.authorId
+        if(!isValidObjectId(id)){
+            return res.status(400).send({status:false,msg:"please provide valid authorId in query param"})
+        }
         let token = (req.headers["x-api-key"])
         let decodedToken = jwt.verify(token, "author-blog")           // verifying the token 
 

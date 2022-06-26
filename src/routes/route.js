@@ -13,7 +13,7 @@ router.get('/blogs',mid.authentication, BlogController.getblog)   // get api to 
 
 router.put('/blogs/:blogId', mid.authentication, mid.authorization, BlogController.updateblog)    // put api to update blogs
 
-router.delete('/blogs/:blogId', mid.authentication, mid.authorization, BlogController.deleteById)   // delete api to delete blog by id
+router.delete('/blogs/:blogId', mid.authentication, BlogController.deleteById)   // delete api to delete blog by id
 
 router.delete('/blogs', mid.authentication, mid.authorization, BlogController.deleteBlogByquery)  // delete api to delete blog by query
 

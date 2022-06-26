@@ -1,4 +1,6 @@
 const { default: mongoose } = require('mongoose');
+const AuthorModel = require('../model/AuthorModel');
+const jwt = require("jsonwebtoken");
 
 const authorModel = require('../model/AuthorModel');
 const blogModel = require('../model/blogModel');
@@ -53,7 +55,9 @@ const createBlog = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Author Id is required" })
         }
         // author id should be valid 
-
+        if(!isValidObjectId(authorId)){
+            return res.status(400).send({status:false,msg:"author id should be valid"})
+        }
 
         if (!isValid(category)) {
             return res.status(400).send({ status: false, msg: "Category is required" })
@@ -66,14 +70,22 @@ const createBlog = async function (req, res) {
         if (!isValid(tags)) {
             return res.status(400).send({ status: false, msg: "tags is required" })
         }
-
         let author = await authorModel.findById(authorId)
         if (!author) {                                                                          //or we can use it with (author.length===0);
             return res.status(400).send({ status: false, msg: "Author does not exist" })
         }
         // author id should be valid or should be same in any one of database stored
-
-        const newBlog = await blogModel.create(data)
+        
+        data.tags = [...new Set(data.tags)]
+            data.subcategory = [...new Set(data.subcategory)]
+            if(data.isPublished)
+                data.publishedAt = Date.now()
+            if(!await AuthorModel.findById(req.body.authorId)) 
+                return res.status(400).send({status: false, msg: "Author Id doesn't present in our DataBase."})
+            if(await blogModel.exists(data)) 
+                return res.status(400).send({status: false, msg: "Blog already present"})
+            
+         const newBlog = await blogModel.create(data)
         return res.status(201).send({ status: true, msg: "New blog created successfully", data: newBlog })
 
     }
@@ -98,9 +110,8 @@ const getblog = async function (req, res) {
         // validating the body with upper defined function
 
 
-        if (!isValidObjectId(authorId)) {
-            return res.status(400).send({ status: false, msg: "authorId is not valid author id please check it" })
-        }
+      
+        
         if (isValid(authorId)) {
             let author = await blogModel.find({ authorId: authorId });
             if (author.length == 0) {
@@ -110,6 +121,10 @@ const getblog = async function (req, res) {
             filter["authorId"] = authorId
         }
         // if author id is correct then add it in filter
+        if(authorId){
+        if (!isValidObjectId(authorId)) {
+            return res.status(400).send({ status: false, msg: "authorId is not valid author id please check it" })}
+        }
 
         if (isValid(category)) {
             let cat = await blogModel.find({ category: category });
@@ -204,10 +219,17 @@ const updateblog = async function (req, res) {
 const deleteById = async function (req, res) {
 
     try {
+        let token = (req.headers["x-api-key"])
+        let decodedToken = jwt.verify(token, "author-blog")           // verifying the token 
+       cd
+
         let blogId = req.params.blogId
         if (!blogId) {
             res.status(400).send({ status: false, msg: "please enter blogid in param" })
             return;
+        }
+        if(!isValidObjectId(blogId)){
+            return res.status(400).send({status:false,msg:"please provide valid author id"})
         }
 
         let blog = await blogModel.findOne({ $and: [{ _id: blogId }, { isDeleted: false }] })
@@ -215,10 +237,13 @@ const deleteById = async function (req, res) {
         if (!blog)
             res.status(404).send({ status: false, msg: "No such blog exist or the blog is deleted" })
 
-        if (blog.isDeleted == true)
-            return res.status(404).send({ status: false, msg: "No such blog exist or the blog is deleted" })
+        
+        if(!(decodedToken.authorId==blog.authorId)){
+            return res.status(403).send({status:false,msg:"you are not authorize to delete this blog"})
+        }
 
-        let afterDeletion = await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true } }, { new: true })
+
+        let afterDeletion = await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true} }, { new: true })
 
         return res.status(200).send({ status: true, msg: "Blog deleted succesfully", data: afterDeletion })
     }
