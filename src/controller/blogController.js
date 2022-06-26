@@ -13,7 +13,7 @@ const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) {
         return false
     }
-    if (typeof value === 'string' && value.trim().length == 0) {
+    if (typeof value === 'string' && value.trim().length === 0) {
         return false
     }
     return true
@@ -28,11 +28,11 @@ const isValidRequestBody = function (data) {
 
 // ----------------------API to create blog----------------------------------------//
 const createBlog = async function (req, res) {
-    
+
     try {
         let data = req.body
 
-        let { title, body, authorId, tags, category, subcategory, isPublished } = data //extract param
+        let { title, body, authorId, tags, category, subcategory } = data //extract param/destructuring
 
         if (!isValidRequestBody(data)) {
             return res.status(400).send({ status: false, msg: "Invalid request parameters. Please provide blog details" })
@@ -59,9 +59,16 @@ const createBlog = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Category is required" })
         }
         // category should be valid 
+        if (!isValid(subcategory)) {
+            return res.status(400).send({ status: false, msg: "subCategory is required" })
+        }
+
+        if (!isValid(tags)) {
+            return res.status(400).send({ status: false, msg: "tags is required" })
+        }
 
         let author = await authorModel.findById(authorId)
-        if (!author) {
+        if (!author) {                                                                          //or we can use it with (author.length===0);
             return res.status(400).send({ status: false, msg: "Author does not exist" })
         }
         // author id should be valid or should be same in any one of database stored
@@ -85,12 +92,16 @@ const getblog = async function (req, res) {
 
         let filter = { isDeleted: false, isPublished: true }
         if (!isValidRequestBody(data)) {
-            res.status(400).send({ status: false, msg: "please query any one" })
+            res.status(400).send({ status: false, msg: "please query any one" })             // if we want without any query then we can remove this line
             return;
         }
         // validating the body with upper defined function
 
-        if (isValid(authorId) && isValidRequestBody(authorId)) {
+
+        if (!isValidObjectId(authorId)) {
+            return res.status(400).send({ status: false, msg: "authorId is not valid author id please check it" })
+        }
+        if (isValid(authorId)) {
             let author = await blogModel.find({ authorId: authorId });
             if (author.length == 0) {
                 res.status(400).send({ status: false, msg: "no data found with this author id " })
@@ -139,7 +150,7 @@ const getblog = async function (req, res) {
         res.status(200).send({ status: true, msg: "Blog details accessed successfully", data: blogs, })
     }
     catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
+        return res.status(500).send({ msg: "Error", error: err.message })
     }
 }
 
@@ -209,7 +220,7 @@ const deleteById = async function (req, res) {
 
         let afterDeletion = await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true } }, { new: true })
 
-        return res.status(200).send({ status: true, data: afterDeletion, msg: "Blog deleted succesfully" })
+        return res.status(200).send({ status: true, msg: "Blog deleted succesfully", data: afterDeletion })
     }
     catch (err) {
         res.status(500).send({ msg: "Error", error: err.message })
@@ -234,11 +245,12 @@ let deleteBlogByquery = async function (req, res) {
         }
         // validating the data 
 
-        if (!isValidObjectId(authorId)) {
-            return res.status(400).send({ sttaus: false, msg: ` please enter a authorid or valid author id ` });
-        }
 
-        if (isValid(authorId) && isValidRequestBody(authorId)) {
+
+        if (!isValidObjectId(authorId)) {
+            return res.status(400).send({ status: false, msg: "authorId is not valid author id please check it" })
+        }
+        if (isValid(authorId)) {
             let author = await blogModel.find({ authorId: authorId });
             if (author.length == 0) {
                 res.status(400).send({ status: false, msg: "no data found with this author id " })
@@ -278,7 +290,7 @@ let deleteBlogByquery = async function (req, res) {
 
         let blog = await blogModel.find(filter)
 
-        if (blog && blog.length == 0) {
+        if (blog.length == 0) {
             return res.status(404).send({ status: false, msg: "No such document exist or it may be deleted" })
         }
         // if blog is not  found then send status false

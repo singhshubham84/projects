@@ -13,14 +13,14 @@ const authentication = async function (req, res, next) {
         let decodedToken = jwt.verify(token, "author-blog")      // decoding token 
 
         if (!decodedToken) {
-            return res.status(400).send({ status: false, msg: "Token is invalid" });
+            return res.status(401).send({ status: false, msg: "Token is invalid" });
         }
              next()
        }
        
     
     catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
+        return res.status(500).send({ msg: "Error", error: err.message })
     }
 
 }
@@ -34,7 +34,7 @@ const authorization = async function (req, res, next) {
         let decodedToken = jwt.verify(token, "author-blog")           // verifying the token 
 
         if (!id)
-            res.status(401).send({ status: false, msg: "authorId must be present" });
+            return res.status(401).send({ status: false, msg: "authorId must be present" });
 
 
         let userLoggedIn = decodedToken.authorId;
@@ -45,12 +45,12 @@ const authorization = async function (req, res, next) {
             next()
         }
         else {
-            res.status(401).send({ status: false, msg: "author logged in is not allowed to modify or access the author data" });
+             return res.status(403).send({ status: false, msg: "author logged in is not allowed to modify or access the author data" });
         }
     }
 
     catch (err) {
-        res.status(500).send({ msg: "Error", error: err.message })
+      return  res.status(500).send({ msg: "Error", error: err.message })
     }
 
 }
