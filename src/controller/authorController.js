@@ -99,7 +99,7 @@ const createAuthor = async function (req, res) {
         /*--------------------------------------------------------------------------------------------------*/
 
         if (!(passwordregex.test(password))) {
-            return res.status(400).send({ status: false, msg: "password is One digit, one upper case , one lower case ,one special character, its b/w 6 to 20" })
+            return res.status(400).send({ status: false, msg: "password is One digit, one upper case , one lower case ,one special character, its b/w 8 to 20" })
         }
         //validating the email with regex
 

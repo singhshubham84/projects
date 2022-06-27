@@ -175,7 +175,9 @@ const updateblog = async function (req, res) {
     try {
         let blogId = req.params.blogId;
         let data = req.body;
-
+        if(!isValidObjectId(blogId)){
+            return res.status(400).send({status:false,msg:"provide valid blogid in params"})
+        }
 
         if (Object.keys(data).length == 0)
             return res.status(400).send({ status: false, msg: "Body is required" });
