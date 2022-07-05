@@ -103,11 +103,6 @@ Refer below sample
   msg: ""
 }
 ```
-
-
-
-
-
 ## Collections
 ### Blogs
 ```yaml

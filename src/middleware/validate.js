@@ -32,7 +32,7 @@ const nameregex = /^([a-zA-Z]+)$/
 //regex for validate the name because name should be alphabetical only
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 // regex for email validation
-const passwordregex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z!#$%&? "])[a-zA-Z0-9!#$%&?]{8,20}$/
+const passwordregex = /^(?=.*(?=.*\d)[a-z])(?=.*[A-Z])(?=.*[a-zA-Z!#$%&? "])[a-zA-Z0-9!#$%&?]{8,20}$/
 //  One digit, one upper case , one lower case ,one special character, its b/w 8 to 20
 
 

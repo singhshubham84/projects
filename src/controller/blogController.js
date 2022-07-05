@@ -66,6 +66,7 @@ const updateblog = async function (req, res) {
             if (typeof data.tags == "object") {
                 blogData.tags.push(...data.tags);
             }
+           
         } // adding the tags
 
         if (data.subcategory) {
@@ -120,7 +121,7 @@ const deleteById = async function (req, res) {
     }
 }
 
-//-------------------------------API to delete the blog according to user query -----------------------------------//
+//-------------------------------API to delete the blog according to  query -----------------------------------//
 
 
 let deleteBlogByquery = async function (req, res) {
@@ -130,11 +131,12 @@ let deleteBlogByquery = async function (req, res) {
 
         let data = Object.keys(qwery)
         if (!data.length) return res.status(400).send({ status: false, msg: "Data can not be empty" });
+        
         let query = { isDeleted: false, ...qwery } // every time check id deleted false
         let blogs = await blogModel.find(query)
-        console.log(blogs)
+        // console.log(blogs)
         if (blogs.length == 0) {
-            return res.send({ msg: "data not available  or  deleted" })
+            return res.status(400).send({ msg: "data not available  or  deleted" })
         }
 
         if (!blogs) return res.status(404).send({ status: false, msg: "Data already deleted" })
@@ -153,8 +155,9 @@ let deleteBlogByquery = async function (req, res) {
                 return blog._id
         })
         //here we are finding out author id which is related to query params and whose value is equal to our decodedToken. if we will find the value we will get authorid else undefined
-
+    
         if (auth === undefined) return res.status(404).send({ msg: "you are not allowed to delete this blog" })
+        
         // console.log(req.token)//it will give us author id which is in decoded token and it will give us those author id only which is authorised to update or delete    
         let deletBlog = await blogModel.updateMany({ _id: auth },
             { $set: { isDeleted: true, isDeletedAt: new Date() } },
