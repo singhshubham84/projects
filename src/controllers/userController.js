@@ -18,6 +18,10 @@ const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
 }
 
+const isValidRequestBody = function (request) {
+    return (Object.keys(request).length > 0)
+}
+
 const nameRegex = /^[.a-zA-Z\s,-]+$/
 //regex for name 
 
@@ -86,8 +90,6 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "password should contain at least One digit, one upper case , one lower case , its b/w 8 to 15" })
         }
         //validating the password with regex
-
-
 
         let userCreated = await userModel.create(data)
         return res.status(201).send({ status: true, message: "user created successfully", data: userCreated })
