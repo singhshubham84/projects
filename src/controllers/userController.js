@@ -29,7 +29,9 @@ const passwordregex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[a-zA-Z!#@$%&? "])[a-
 const createUser = async function (req, res) {
     try {
         let data = req.body
+
         let {title,name,phone,email,password}= data
+        
         if (!isValidRequestBody(data)) {
             return res.status(400).send({ status: false, msg: "Invalid request parameters. Please provide author details" })
         }
@@ -64,7 +66,7 @@ const createUser = async function (req, res) {
 
         let userEmail = await userModel.find({ email: data.email })
         if (userEmail.length !== 0)
-            return res.status(401).send({ status: false, message: "This e-mail address is already exist , Please enter valid E-mail address" })
+            return res.status(400).send({ status: false, message: "This e-mail address is already exist , Please enter valid E-mail address" })
         //checking the author email is correct or not 
 
         if (!isValid(password))
@@ -76,8 +78,10 @@ const createUser = async function (req, res) {
         }
         //validating the email with regex
 
+
+
         let userCreated = await authorModel.create(data)
-        return res.status(201).send({ status: true, message: "Author created successfully", data: userCreated })
+        return res.status(201).send({ status: true, message: "user created successfully", data: userCreated })
 
     }
     catch (err) {
