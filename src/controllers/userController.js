@@ -28,7 +28,8 @@ const passwordregex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[a-zA-Z!#@$%&? "])[a-
 
 const createUser = async function (req, res) {
     try {
-        let = req.body
+        let data = req.body
+        let {title,name,phone,email,password}= data
         if (!isValidRequestBody(data)) {
             return res.status(400).send({ status: false, msg: "Invalid request parameters. Please provide author details" })
         }
