@@ -101,4 +101,57 @@ const createUser = async function (req, res) {
 
 }
 
+// ==========loginuser=========================================================
+
+const userLogIn = async function (req, res) {
+    try {
+      let userEmail = req.body.email;
+      if (!userEmail) {
+        return res
+          .status(400)
+          .send({ status: false, message: "email is required" });
+      }
+      if (!/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(req.body.email)) {
+        return res
+          .status(400)
+          .send({ status: false, data: "plz enter the valid Email" });
+      }
+      let userPassword = req.body.password;
+      if (!userPassword) {
+        return res
+          .status(400)
+          .send({ status: false, message: "passworrd is required" });
+      }
+      if (req.body.password.trim().length <= 6) {
+        return res
+          .status(400)
+          .send({ status: false, data: "plz enter the valid Password" });
+      }
+      let isUser = await userModel.findOne({
+        email: userEmail,
+        password: userPassword,
+      });
+      if (!isUser) {
+        return res
+          .status(404)
+          .send({ status: false, data: "No such author exists" });
+      }
+      let token = jwt.sign(
+        {
+          userId: isUser._id.toString(),
+        },
+        "functionUp",
+        { expiresIn: "1200s" }
+      );
+      // res.setHeader("x-api-key",token)
+      res.status(201).send({ status: true, data: { token: token } });
+    } catch (err) {
+      res.status(500).send({ status: false, data: err.message });
+    }
+  };
+  
+  module.exports.userLogIn = userLogIn;
+
+
+
 module.exports.createUser = createUser
