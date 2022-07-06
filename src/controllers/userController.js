@@ -48,7 +48,7 @@ const createUser = async function(req,res){
         if(!isValid(phone))
         return res.status(400).send({status:false, message : "phone number is required"})
         //    validating the name with regex       
-        if (!(emailRegex.test(phone))) {
+        if (!(mobileRegex.test(phone))) {
             return res.status(400).send({ status: false, message: "Please provide a valid mobile number, it should start 6-9.(you can also use STD code 0)" })
         }
 
