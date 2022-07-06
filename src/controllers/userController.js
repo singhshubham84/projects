@@ -54,6 +54,8 @@ const createUser = async function (req, res) {
         if (!(mobileRegex.test(phone))) {
             return res.status(400).send({ status: false, message: "Please provide a valid mobile number, it should start 6-9.(you can also use STD code 0)" })
         }
+        const usedphone = await userModel.findOne({ phone })
+        if (usedphone) return res.status(400).send({ status: false, message: "phone no already exists. Please provide another phone number" })
 
         if (!isValid(email))
             return res.status(400).send({ status: false, message: "E-mail is required" })
