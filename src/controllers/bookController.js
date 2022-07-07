@@ -86,5 +86,28 @@ const createBook = async (req, res) => {
     catch (err) { return res.status(500).send({ message: "Error", error: err.message }) }
 }
 
+// ===============================================================================================
+
+const deleteBooksbyId = async function (req, res) {
+    try {
+      const bookId = req.params.bookId
+      console.log(bookId)
+      if (!bookId) return res.status(400).send({ status: false, msg: "BookId should be present in params" })
+      let check = await bookModel.findOne({ _id: bookId,isDeleted:false })
+      
+      if (!check) return res.status(404).send({ status: false, msg: "no such book exist" })
+     
+        let deleteBook = await bookModel.findOneAndUpdate({ _id: bookId,isDeleted:false}, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true }) // we can change new Date() to moment().format()
+        if (!deleteBook) return res.status(404).send({ status: false, msg: "no such book exist" })
+     
+        res.status(200).send({ status: true, msg: "book is deleted successfully" })
+  
+    }
+    catch (err) {
+      console.log(err)
+      res.status(500).send({ status: false, msg: "error", err: err.message })
+    }
+  }
 
 module.exports.createBook = createBook
+module.exports.deleteBooksbyId  = deleteBooksbyId ;

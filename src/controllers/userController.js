@@ -1,11 +1,5 @@
-<<<<<<< remotes/origin/project-3-shubham
-const userModel = require('../model/userModel')
-const jwt = require("jsonwebtoken");
-
-=======
 const userModel = require('../model/userModel');
 const jwt = require("jsonwebtoken");
->>>>>>> local
 
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) {
@@ -115,6 +109,7 @@ const createUser = async function (req, res) {
     }
 
 }
+// =========================login api=======================================================
 const userLogIn = async function (req, res) {
     try {
         let data = req.body;
@@ -151,25 +146,8 @@ const userLogIn = async function (req, res) {
     } catch (err) {
         res.status(500).send({ status: false, data: err.message });
     }
-<<<<<<< HEAD
-<<<<<<< Updated upstream
+
   };
   
   module.exports.userLogIn = userLogIn;
-
-=======
-<<<<<<< remotes/origin/project-3-shubham
-};
->>>>>>> Stashed changes
-=======
-};
->>>>>>> c961e749e1da110e9ea87a7015622b2fd3596d5a
-
-module.exports.userLogIn = userLogIn;
-
-=======
-  };
-  
-  module.exports.userLogIn = userLogIn;
->>>>>>> local
-module.exports.createUser = createUser
+  module.exports.createUser=createUser;
