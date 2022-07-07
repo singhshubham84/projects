@@ -6,17 +6,19 @@ const auth =require('../middleware/auth')
 
 
 
-router.post("/register", userController.createUser)
+router.post("/register", userController.createUser) //To create a user
 
-router.post("/books",auth.authentication, bookController.createBook)
+router.post("/login", userController.userLogIn) // For login 
 
-router.post("/login", userController.userLogIn)
+router.post("/books",auth.authentication, bookController.createBook) // To create a book 
 
-router.get('/books', auth.authentication, bookController.getBook)
+router.get('/books', auth.authentication, bookController.getBook) // get the book data
 
-router.get('/books/:bookId',auth.authentication,bookController.getBookById)
+router.get('/books/:bookId', auth.authentication, bookController.getBookById) // get the book data by its ID
 
-router.put('/books/:bookId',auth.authentication,auth.authorization,bookController.bookUpdate)
+router.put('/books/:bookId',auth.authentication,auth.authorization,bookController.bookUpdate) // update the book data
+
+router.delete('/books/:bookId',auth.authentication,auth.authorization,bookController.delBookById)  //delete book data by its ID
 
 
 

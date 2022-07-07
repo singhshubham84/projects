@@ -57,13 +57,13 @@
 ```
 
 ## User APIs 
-### POST /register
+### POST /register       ==============________ COMPLETED
 - Create a user - atleast 5 users
 - Create a user document from request body.
 - Return HTTP status 201 on a succesful user creation. Also return the user document. The response should be a JSON object like [this](#successful-response-structure)
 - Return HTTP status 400 if no params or invalid params received in request body. The response should be a JSON object like [this](#error-response-structure)
 
-### POST /login
+### POST /login ================= COMPLETED
 - Allow an user to login with their email and password.
 - On a successful login attempt return a JWT token contatining the userId, exp, iat. The response should be a JSON object like [this](#successful-response-structure)
 - If the credentials are incorrect return a suitable error message with a valid HTTP status code. The response should be a JSON object like [this](#error-response-structure)
@@ -76,7 +76,7 @@
 - Create atleast 10 books for each user
 - Return HTTP status 400 for an invalid request with a response body like [this](#error-response-structure)
 
-### GET /books
+### GET /books        ============ COMPLETED
 - Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field. Response example [here](#get-books-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
@@ -93,7 +93,7 @@
 - If the book has no reviews then the response body should include book detail as shown [here](#book-details-response-no-reviews) and an empty array for reviewsData.
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
 
-### PUT /books/:bookId
+### PUT /books/:bookId ===========check release date
 - Update a book by changing its
   - title
   - excerpt
@@ -104,7 +104,7 @@
 - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
 - Also make sure in the response you return the updated book document. 
 
-### DELETE /books/:bookId
+### DELETE /books/:bookId  =============____completed________check if we have to show deleted data on response_________----------
 
 - Check if the bookId exists and is not deleted. If it does, mark it deleted and return an HTTP status 200 with a response body with status and message.
 - If the book document doesn't exist then return an HTTP status of 404 with a body like [this](#error-response-structure) 
