@@ -1,5 +1,10 @@
+<<<<<<< remotes/origin/project-3-shubham
 const userModel = require('../model/userModel')
 
+=======
+const userModel = require('../model/userModel');
+const jwt = require("jsonwebtoken");
+>>>>>>> local
 
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) {
@@ -148,10 +153,20 @@ const userLogIn = async function (req, res) {
     } catch (err) {
       res.status(500).send({ status: false, data: err.message });
     }
+<<<<<<< Updated upstream
   };
   
   module.exports.userLogIn = userLogIn;
 
+=======
+<<<<<<< remotes/origin/project-3-shubham
+};
+>>>>>>> Stashed changes
 
 
+=======
+  };
+  
+  module.exports.userLogIn = userLogIn;
+>>>>>>> local
 module.exports.createUser = createUser
