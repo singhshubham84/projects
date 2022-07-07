@@ -1,6 +1,5 @@
-const userModel = require('../model/userModel')
+const userModel = require('../model/userModel');
 const jwt = require("jsonwebtoken");
-
 
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) {
@@ -110,6 +109,7 @@ const createUser = async function (req, res) {
     }
 
 }
+// =========================login api=======================================================
 const userLogIn = async function (req, res) {
     try {
         let data = req.body;
@@ -146,8 +146,8 @@ const userLogIn = async function (req, res) {
     } catch (err) {
         res.status(500).send({ status: false, data: err.message });
     }
-};
 
-module.exports.userLogIn = userLogIn;
-
-module.exports.createUser = createUser
+  };
+  
+  module.exports.userLogIn = userLogIn;
+  module.exports.createUser=createUser;
