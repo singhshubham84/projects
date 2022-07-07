@@ -139,7 +139,7 @@ const userLogIn = async function (req, res) {
                 project: "Books Management"
             },
             "functionUp",
-            { expiresIn: "1200s" }
+            { expiresIn: "12000s" }
         );
         res.setHeader("x-api-key",token)
         res.status(201).send({ status: true,message: 'Success', data: { token: token } });
