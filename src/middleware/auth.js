@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const booksModel = require('../model/booksModel')
+const userModel = require('../model/userModel')
 const mongoose = require('mongoose')
+
 
 
 const isValidObjectId = function (objectId) {
@@ -28,7 +30,38 @@ const authentication = async function (req, res, next) {
     }
 
 }
-const authorization = async function (req, res, next) {
+
+const userAuthorization = async (req, res, next) => {
+    try {
+        
+        let userId = req.body.userId
+
+        if (!isValidObjectId(userId)) {
+            return res.status(400).send({ status: false, message: "userId is invalid" })
+        }
+        
+
+        let token = (req.headers["x-api-key"])
+        let decodedToken = jwt.verify(token, "functionUp")           // verifying the token 
+       
+        let tokenUserId = decodedToken.userId
+       
+        const isIdExist = await userModel.findOne({_id: userId });
+
+        if (!isIdExist) return res.status(404).send({status: false, message: "User Id does not exist" })
+
+        //checking valid token userid 
+        if (userId !== tokenUserId) return res.status(401).send({status: false,message: "User not Authorised to create a new Book"})
+       
+        next();
+
+    }   catch (err) {
+        return res.status(500).send({ msg: "Error", error: err.message })
+    }
+
+}
+
+const bookAuthorization = async function (req, res, next) {
     try {
 
         let bookId = req.params.bookId
@@ -59,4 +92,5 @@ const authorization = async function (req, res, next) {
 }
 
 module.exports.authentication=authentication
-module.exports.authorization=authorization
+module.exports.bookAuthorization=bookAuthorization
+module.exports.userAuthorization=userAuthorization
