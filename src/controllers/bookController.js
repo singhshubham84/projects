@@ -85,6 +85,7 @@ const createBook = async function (req, res) {
             title: data.title,
             excerpt: data.excerpt,
             userId: data.userId,
+            ISBN:data.ISBN,
             category: data.category,
             subcategory: data.subcategory,
             isDeleted: data.isDeleted,
