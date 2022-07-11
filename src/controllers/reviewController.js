@@ -26,8 +26,7 @@ const createReview = async function (req, res) {
 
         if (!isValid(rating)) return res.status(400).send({ status: false, message: 'Rating is required!' })
 
-
-        if (typeof rating !== 'number') return res.status(400).send({ Status: false, message: "rating must be number only" })   
+        if (typeof rating !== 'number') return res.status(400).send({ Status: false, message: "rating must be number only" })
 
         if (rating < 1 || rating > 5) return res.status(400).send({ status: false, message: 'Rating must be in 1 to 5' })
         // Rating must be in 1 to 5
@@ -59,7 +58,7 @@ const createReview = async function (req, res) {
             isBook.reviews = increase
             await isBook.save(); //The save() method is asynchronous, so it returns a promise that you can await on.
         }
-        let data=await bookModel.findById(bookId)
+        let data = await bookModel.findById(bookId)
 
         let obj = {
             _id: data._id,
@@ -76,16 +75,97 @@ const createReview = async function (req, res) {
             updatedAt: data.updatedAt
 
         }
-       
+
         const reviewArr = await reviewsModel.find({ bookId: data._id, isDeleted: false }).select({ __v: 0, isDeleted: 0 })
         obj.reviewsData = reviewArr;
-    
 
-        res.status(201).send({ status: true, data : obj })
+
+        res.status(201).send({ status: true, data: obj })
 
     } catch (err) {
         res.status(500).send({ status: false, message: err.message })
     }
 }
 
+const updateReview = async function (req, res) {
+
+    try {
+        const bookId = req.params.bookId
+        if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "BookId invalid" })
+
+        const reviewId = req.params.reviewId
+        if (!isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: "ReviewId invalid" })
+
+        const data = req.body
+
+        if (!isValidRequestBody(data)) return res.status(400).send({ status: false, message: "Data is required" })
+
+        const isBook = await bookModel.findById(bookId)
+
+        if (!isBook) return res.status(404).send({ status: false, message: 'Book not found' })
+
+        if (isBook.isDeleted) return res.status(404).send({ status: false, message: "Book already deleted, can't edit review" })
+
+        const isReview = await reviewsModel.findById(reviewId)
+
+        if (!isReview) return res.status(404).send({ status: false, message: 'Review not found' })
+
+        if (isReview.bookId.toString() !== bookId) return res.status(404).send({ status: false, message: "ReviewId does not belong to particular book " })
+
+        if (isReview.isDeleted) return res.status(404).send({ status: false, message: "Review already deleted" })
+
+        let {
+            review,
+            rating,
+            reviewedBy
+        } = data
+
+        if (isValid(review)) {
+            isReview.review = review
+        }
+
+        if (isValid(rating)) {
+            if (typeof rating !== 'number') return res.status(400).send({ Status: false, message: "rating must be number only" })
+            // Rating must be in 1 to 5
+            if (rating < 1 || rating > 5) return res.status(400).send({ status: false, message: 'Rating must be in 1 to 5' })
+
+            isReview.rating = rating
+        }
+
+        if (isValid(reviewedBy)) {
+            isReview.reviewedBy = reviewedBy
+        }
+
+        await isReview.save()
+        //send data 
+        let bookData = await bookModel.findById(bookId)
+
+        let obj = {
+            _id: bookData._id,
+            title: bookData.title,
+            excerpt: bookData.excerpt,
+            userId: bookData.userId,
+            category: bookData.category,
+            subcategory: bookData.subcategory,
+            isDeleted: bookData.isDeleted,
+            reviews: bookData.reviews,
+            deletedAt: bookData.deletedAt,
+            releasedAt: bookData.releasedAt,
+            createdAt: bookData.createdAt,
+            updatedAt: bookData.updatedAt
+        }
+
+        const reviewArr = await reviewsModel.find({ bookId: bookId, isDeleted: false }).select({ __v: 0, isDeleted: 0 })
+        obj.reviewsData = reviewArr;
+
+        res.status(201).send({ status: true, data: obj })
+
+    } catch (err) {
+        res.status(500).send({ status: false, message: err.message })
+    }
+}
+
+
+
 module.exports.createReview = createReview
+module.exports.updateReview = updateReview

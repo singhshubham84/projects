@@ -252,7 +252,7 @@ const bookUpdate = async function (req, res) {
 
         validBook.save();
 
-        res.status(200).send({ status: true, message: "Update succesful", data: validBook })
+       return res.status(200).send({ status: true, message: "Update succesful", data: validBook })
 
     }
     catch (err) { return res.status(500).send({ message: "Error", error: err.message }) }

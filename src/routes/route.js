@@ -23,8 +23,11 @@ router.put('/books/:bookId',auth.authentication,auth.bookAuthorization,bookContr
 
 router.delete('/books/:bookId',auth.authentication,auth.bookAuthorization,bookController.delBookById)  //delete book data by its ID
 
-router.post("/books/:bookId/review", reviewController.createReview)
+/*_________________________----===> REVIEW API <====----_____________________________________ */
 
+router.post('/books/:bookId/review', reviewController.createReview)
+
+router.put('/books/:bookId/review/:reviewId', reviewController.updateReview)
 
 
 
