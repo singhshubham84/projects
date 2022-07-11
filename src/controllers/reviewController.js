@@ -220,6 +220,53 @@ const deletedReview = async function(req, res)  {
 
 
 
+// const deleteReview = async function (req, res){
+//     try{
+
+//     const book_id = req.params.bookId;
+
+//     const review_Id = req.params.reviewId;
+
+//     if (!validator.isValidObjectId(book_id)) {
+//         return res.status(400).send({ status: false, message: "Invalid BookId." })
+//     }
+
+//     if (!validator.isValidObjectId(review_Id)) {
+//         return res.status(400).send({ status: false, message: "Invalid reviewId." })
+//     }
+
+//     let checkBook=await bookModel.findById(book_id)
+
+//     if(!checkBook){
+//         return res.status(404).send({ status: false, message: "BookId Not Found" })
+//     }
+//     let checkReview=await reviewModel.findById(review_Id)
+
+//     if(!checkReview){
+//         return res.status(404).send({ status: false, message: "reviewId Not Found" })
+//     }
+
+//     if (checkBook.isDeleted == true||checkReview.isDeleted==true){
+
+//         return res.status(400).send({ status: false, message: "Can't Delete Review of a Deleted Book " })
+//     }
+
+//     const deleteReviewDetails = await reviewModel.findOneAndUpdate(
+//         { _id: review_Id }, 
+//         { isDeleted: true, deletedAt: new Date() }, 
+//         { new: true })
+
+//     if (deleteReviewDetails) {
+//     await bookModel.findOneAndUpdate({ _id: book_id },{$inc:{ reviews: -1 }})
+//      }
+
+//      return res.status(200).send({ status: true, message: "Review deleted successfully.",data:deleteReviewDetails})
+
+//     }catch(err){
+
+//         res.status(500).send({ status: false, Error: err.message })
+//     }
+// }
 
 module.exports.createReview = createReview
 module.exports.updateReview = updateReview
