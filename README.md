@@ -69,7 +69,7 @@
 - If the credentials are incorrect return a suitable error message with a valid HTTP status code. The response should be a JSON object like [this](#error-response-structure)
  
 ## Books API
-### POST /books----------//////-----------------releasedAt -----------
+### POST /books=================== COMPLETED
 - Create a book document from request body. Get userId in request body only.
 - Make sure the userId is a valid userId by checking the user exist in the users collection.
 - Return HTTP status 201 on a succesful book creation. Also return the book document. The response should be a JSON object like [this](#successful-response-structure) 
@@ -93,7 +93,7 @@
 - If the book has no reviews then the response body should include book detail as shown [here](#book-details-response-no-reviews) and an empty array for reviewsData.
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
 
-### PUT /books/:bookId ===========check release date
+### PUT /books/:bookId ===========COMPLETED
 - Update a book by changing its
   - title
   - excerpt

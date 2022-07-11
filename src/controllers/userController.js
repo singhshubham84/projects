@@ -1,38 +1,16 @@
 const userModel = require('../model/userModel');
 const jwt = require("jsonwebtoken");
 
-const isValid = function (value) {
-    if (typeof value === 'undefined' || value === null) {
-        return false
-    }
-    //value given by user should not be undefined and null
-    if (typeof value === 'string' && value.trim().length == 0) {
-        return false
-    }
-    //value given by user should  be string and not with only space 
-    return true
+const { isValid,
+    isValidEmail,
+    isValidName,
+    isValidPassword,
+    isValidPincode,
+    isValidRequestBody,
+    isValidTitle
+                  } = require("../utility/validation")
 
-}
-// function for title validation
-const isValidTitle = function (title) {
-    return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
-}
 
-const isValidRequestBody = function (request) {
-    return (Object.keys(request).length > 0)
-}
-
-const nameRegex = /^[.a-zA-Z\s,-]+$/
-//regex for name 
-
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-// regex for email validation
-const mobileRegex = /^[0]?[6789]\d{9}$/
-//10 didgit mobile number stating with any(6,7,8,9) and 0 if you want to use in mobile number 
-const pincodeRegex = /^\d{6}$/
-
-const passwordregex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[a-zA-Z!#@$%&? "])[a-zA-Z0-9!#@$%&?]{8,15}$/
-//  One digit, one upper case , one lower case , its b/w 8 to 15
 
 const createUser = async function (req, res) {
     try {
@@ -55,7 +33,7 @@ const createUser = async function (req, res) {
         if (!isValid(name))
             return res.status(400).send({ status: false, message: "First name is required" })
 
-        if (!(nameRegex.test(name))) {
+        if (!(isValidName(name))) {
             return res.status(400).send({ status: false, message: "please provide correct user name" })
         }
         //    validating the name with regex       
@@ -63,7 +41,7 @@ const createUser = async function (req, res) {
         if (!isValid(phone))
             return res.status(400).send({ status: false, message: "phone number is required" })
 
-        if (!(mobileRegex.test(phone))) {
+        if (!(isUniquePhone(phone))) {
             return res.status(400).send({ status: false, message: "Please provide a valid mobile number, it should start 6-9.(you can also use STD code 0)" })
         } //    validating the phone with regex       
         const isUniquePhone = await userModel.findOne({ phone })
@@ -73,7 +51,7 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "E-mail is required" })
         // validating the email
 
-        if (!(emailRegex.test(email))) {
+        if (!(isUniqueEmail(email))) {
             return res.status(400).send({ status: false, message: "E-mail should be a valid e-mail address" })
         }
         // validating the email with regex
@@ -87,18 +65,24 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "password is not exist" })
         // password is present or not
 
-        if (!(passwordregex.test(password))) {
+        if (!(isValidPassword(password))) {
             return res.status(400).send({ status: false, message: "password should contain at least One digit, one upper case , one lower case , its b/w 8 to 15" })
         }
         //validating the password with regex
-        if (!isValid(address.street))
-            return res.status(400).send({ status: false, message: "provide street name" })
+        if (address) {
+            // type of address check object or not
 
-        if (!isValid(address.city))
-            return res.status(400).send({ status: false, message: "provide city name" })
+            if (address.street) {
+                if (!isValid(address.street))                               //=======
+                    return res.status(400).send({ status: false, message: "provide street name" })
+            }
 
-        if (!(pincodeRegex.test(address.pincode)))
-            return res.status(400).send({ status: false, message: "pincode is invalid" })
+            if (!isValid(address.city))
+                return res.status(400).send({ status: false, message: "provide city name" })
+
+            if (!(isValidPincode(address.pincode)))
+                return res.status(400).send({ status: false, message: "pincode is invalid" })
+        }
 
         let userCreated = await userModel.create(data)
         return res.status(201).send({ status: true, message: "user created successfully", data: userCreated })
@@ -118,7 +102,7 @@ const userLogIn = async function (req, res) {
             return res.status(400).send({ status: false, message: "E-mail is required" })
         // validating the email
 
-        if (!(emailRegex.test(email))) {
+        if (!(isValidEmail(email))) {
             return res.status(400).send({ status: false, message: "E-mail should be a valid e-mail address" })
         }
         // validating the email with regex
@@ -126,7 +110,7 @@ const userLogIn = async function (req, res) {
             return res.status(400).send({ status: false, message: "password is required" })
         // password is present or not
 
-        if (!(passwordregex.test(password))) {
+        if (!(isValidPassword(password))) {
             return res.status(400).send({ status: false, message: "password should contain at least One digit, one upper case ,one lower case , its b/w 8 to 15" })
         }
         let isUser = await userModel.findOne({ email: email, password: password });
@@ -139,15 +123,15 @@ const userLogIn = async function (req, res) {
                 project: "Books Management"
             },
             "functionUp",
-            { expiresIn: "12000s" }
+            { expiresIn: "12000000000s" }
         );
-        res.setHeader("x-api-key",token)
-        res.status(201).send({ status: true,message: 'Success', data: { token: token } });
+        res.setHeader("x-api-key", token)
+        res.status(201).send({ status: true, message: 'Success', data: { token: token } });
     } catch (err) {
         res.status(500).send({ status: false, data: err.message });
     }
 
-  };
-  
-  module.exports.userLogIn = userLogIn;
-  module.exports.createUser=createUser;
+};
+
+module.exports.userLogIn = userLogIn;
+module.exports.createUser = createUser;
