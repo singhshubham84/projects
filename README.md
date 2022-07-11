@@ -87,7 +87,7 @@
   example of a query url: books?filtername=filtervalue&f2=fv2
 - Return all books sorted by book name in Alphabatical order
 
-### GET /books/:bookId   ----- //////////-------review not added at---------
+### GET /books/:bookId   ----COMPLETED
 - Returns a book with complete details including reviews. Reviews array would be in the form of Array. Response example [here](#book-details-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If the book has no reviews then the response body should include book detail as shown [here](#book-details-response-no-reviews) and an empty array for reviewsData.
@@ -104,26 +104,26 @@
 - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
 - Also make sure in the response you return the updated book document. 
 
-### DELETE /books/:bookId  =============____completed________check if we have to show deleted data on response_________----------
+### DELETE /books/:bookId  =============____completed
 
 - Check if the bookId exists and is not deleted. If it does, mark it deleted and return an HTTP status 200 with a response body with status and message.
 - If the book document doesn't exist then return an HTTP status of 404 with a body like [this](#error-response-structure) 
 
 ## Review APIs
-### POST /books/:bookId/review
+### POST /books/:bookId/review============COMPLETED
 - Add a review for the book in reviews collection.
 - Check if the bookId exists and is not deleted before adding the review. Send an error response with appropirate status code like [this](#error-response-structure) if the book does not exist
 - Get review details like review, rating, reviewer's name in request body.
 - Update the related book document by increasing its review count
 - Return the updated book document with reviews data on successful operation. The response body should be in the form of JSON object like [this](#successful-response-structure)
 
-### PUT /books/:bookId/review/:reviewId
+### PUT /books/:bookId/review/:reviewId======================COMPLETED
 - Update the review - review, rating, reviewer's name.
 - Check if the bookId exists and is not deleted before updating the review. Check if the review exist before updating the review. Send an error response with appropirate status code like [this](#error-response-structure) if the book does not exist
 - Get review details like review, rating, reviewer's name in request body.
 - Return the updated book document with reviews data on successful operation. The response body should be in the form of JSON object like [this](#book-details-response)
 
-### DELETE /books/:bookId/review/:reviewId
+### DELETE /books/:bookId/review/:reviewId  ============COMPLETED
 - Check if the review exist with the reviewId. Check if the book exist with the bookId. Send an error response with appropirate status code like [this](#error-response-structure) if the book or book review does not exist
 - Delete the related reivew.
 - Update the books document - decrease review count by one
@@ -308,7 +308,7 @@ Refer below sample
     "excerpt": "book body",
     "userId": ObjectId("88abc190ef0288abc190ef02")
     "category": "Book",
-    "subcategory": "Non fiction", "Self Help"],
+    "subcategory": "Non fiction", "Self Help",
     "isDeleted": false,
     "reviews": 0,
     "releasedAt": "2021-09-17"
