@@ -8,7 +8,7 @@ const { isValid,
     isValidPincode,
     isValidRequestBody,
     isValidTitle
-                  } = require("../utility/validation")
+} = require("../utility/validation")
 
 
 
@@ -76,12 +76,14 @@ const createUser = async function (req, res) {
                 if (!isValid(address.street))                               //=======
                     return res.status(400).send({ status: false, message: "provide street name" })
             }
-
-            if (!isValid(address.city))
-                return res.status(400).send({ status: false, message: "provide city name" })
-
-            if (!(isValidPincode(address.pincode)))
-                return res.status(400).send({ status: false, message: "pincode is invalid" })
+            if (address.city) {
+                if (!isValid(address.city))
+                    return res.status(400).send({ status: false, message: "provide city name" })
+            }
+            if (address.pincode) {
+                if (!(isValidPincode(address.pincode)))
+                    return res.status(400).send({ status: false, message: "pincode is invalid" })
+            }
         }
 
         let userCreated = await userModel.create(data)
