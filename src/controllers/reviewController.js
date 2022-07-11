@@ -173,31 +173,26 @@ const deletedReview = async function(req, res)  {
     try {
       
         const bookId = req.params.bookId
-        if (!isValidObjectId(bookId)) return res.status(400).send({status: false, message: "BookId invalid" })
+        if (!isValidObjectId(bookId)) return res.status(400).send({status: false, message: "BookId is invalid" })
        
         const reviewId = req.params.reviewId
-        if (!isValidObjectId(reviewId)) return res.status(400).send({status: false, message: "ReviewId invalid"})
-
-        
+        if (!isValidObjectId(reviewId)) return res.status(400).send({status: false, message: "ReviewId is invalid"})
+       
         const isBook = await bookModel.findById(bookId)
        
         if (!isBook) return res.status(404).send({ status: false,message: 'Book not found'})
 
      
         if (isBook.isDeleted) return res.status(404).send({status: false,message: "Book already deleted " })
-
-       
+     
         const isReview = await reviewsModel.findById(reviewId)
        
         if (!isReview) return res.status(404).send({ status: false, message: 'Review not found'})
-
-       
+   
         if (isReview.bookId.toString() !== bookId) return res.status(404).send({status: false, message: "ReviewId does not belong to particular book "})
-
-       
+   
         if (isReview.isDeleted) return res.status(404).send({ status: false, message: "Review already deleted" })
-
-       
+     
         isReview.isDeleted = true
         await isReview.save()
 
@@ -206,11 +201,7 @@ const deletedReview = async function(req, res)  {
         isBook.reviews = dec
         await isBook.save();
 
-
-
         res.status(200).send({status: true, data: "Review deleted successfully and book doc updated"})
-
-
 
     } catch (err) {
         res.status(500).send({ status: false, message: err.message })
