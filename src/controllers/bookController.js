@@ -172,7 +172,7 @@ const getBookById = async function (req, res) {
         }
         const reviewArr = await reviewsModel.find({ bookId: data._id, isDeleted: false }).select({ __v: 0, isDeleted: 0 })
         obj.reviewsData = reviewArr;
-        // we have to add review also//----------------------------------
+        
 
         return res.status(200).send({ status: true, message: "Book List", data: obj })
     }
