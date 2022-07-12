@@ -72,6 +72,9 @@ const createUser = async function (req, res) {
         //validating the password with regex
         if (address) {
             // type of address check object or not
+            if(typeof address !=="object"){
+               return res.status(400).send({status:false,message:"address should be in object form"})
+            }
 
             if (address.street) {
                 if (!isValid(address.street))                               //=======
