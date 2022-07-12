@@ -35,4 +35,11 @@ router.delete("/books/:bookId/review/:reviewId", reviewController.deletedReview)
 
 
 
+
+// validation of url
+router.all('/', (req, res)=>res.status(400).send({status:false,message:"invaild request 1"}));
+router.all('/:y/', (req, res)=>res.status(400).send({status:false,message:"invaild request2"}));
+router.all('/:y/:x', (req, res)=>res.status(400).send({status:false,message:"invaild request3"}));
+
+
 module.exports = router;
