@@ -7,11 +7,12 @@ const { isValid,
     isValidPassword,
     isValidPincode,
     isValidRequestBody,
-    isValidTitle
+    isValidTitle,
+    isValidPhone
 } = require("../utility/validation")
 
 
-
+/*______________________________________---====> CREATE A USER <=====---___________________________________*/ 
 const createUser = async function (req, res) {
     try {
         let data = req.body
@@ -41,7 +42,7 @@ const createUser = async function (req, res) {
         if (!isValid(phone))
             return res.status(400).send({ status: false, message: "phone number is required" })
 
-        if (!(isUniquePhone(phone))) {
+        if (!(isValidPhone(phone))) {
             return res.status(400).send({ status: false, message: "Please provide a valid mobile number, it should start 6-9.(you can also use STD code 0)" })
         } //    validating the phone with regex       
         const isUniquePhone = await userModel.findOne({ phone })
@@ -51,7 +52,7 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, message: "E-mail is required" })
         // validating the email
 
-        if (!(isUniqueEmail(email))) {
+        if (!(isValidEmail(email))) {
             return res.status(400).send({ status: false, message: "E-mail should be a valid e-mail address" })
         }
         // validating the email with regex
