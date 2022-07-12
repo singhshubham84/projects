@@ -32,7 +32,7 @@ const createUser = async function (req, res) {
         //validating the title with above two function
 
         if (!isValid(name))
-            return res.status(400).send({ status: false, message: "First name is required" })
+            return res.status(400).send({ status: false, message: "name is required" })
 
         if (!(isValidName(name))) {
             return res.status(400).send({ status: false, message: "please provide correct user name" })
@@ -121,7 +121,7 @@ const userLogIn = async function (req, res) {
         }
         let isUser = await userModel.findOne({ email: email, password: password });
         if (!isUser) {
-            return res.status(404).send({ status: false, data: "you are not a valid user" });
+            return res.status(401).send({ status: false, data: "you are not a valid user" });
         }
         let token = jwt.sign(
             {

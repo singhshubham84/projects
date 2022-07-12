@@ -9,16 +9,6 @@ const isValidObjectId = function (objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
 
-// const authToken = (token)=>{
-//     let tokenValidate = jwt.verify(token,"project-3",(err,data)=>{
-//         if(err) 
-//         return null
-//         else{
-//             return data
-//         }    
-//     })
-//     return tokenValidate
-// }
 
 const authentication = async function (req, res, next) {
     try {
@@ -29,13 +19,7 @@ const authentication = async function (req, res, next) {
         }
 
         let decodedToken = jwt.verify(token, "functionUp")      // decoding token 
-        // let decodedToken = jwt.verify(token,"functionUp",(err,data)=>{
-        //     if(err) 
-        //     return null
-        //     else{
-        //         return data
-        //     }    
-        // })
+       
          
         if (!decodedToken) {
             return res.status(400).send({ status: false, msg: "Token is invalid" });

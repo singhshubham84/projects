@@ -25,11 +25,11 @@ router.delete('/books/:bookId',auth.authentication,auth.bookAuthorization,bookCo
 
 /*_________________________----===> REVIEW API <====----_____________________________________ */
 
-router.post('/books/:bookId/review', reviewController.createReview)
+router.post('/books/:bookId/review', reviewController.createReview) // create review for a book
 
-router.put('/books/:bookId/review/:reviewId', reviewController.updateReview)
+router.put('/books/:bookId/review/:reviewId', reviewController.updateReview)  // update a review
 
-router.delete("/books/:bookId/review/:reviewId", reviewController.deletedReview)
+router.delete("/books/:bookId/review/:reviewId", reviewController.deletedReview) // delete a review
 
 
 

@@ -108,9 +108,9 @@ const getBook = async function (req, res) {
     try {
         const data = req.query;
 
-        if (!isValidRequestBody(data)) return res.status(400).send({
-            status: false, message: "Invalid request parameters. Please provide book details"
-        })
+        // if (!isValidRequestBody(data)) return res.status(400).send({
+        //     status: false, message: "Invalid request parameters. Please provide book details"
+        // })
 
         let obj = { isDeleted: false }
 
