@@ -21,7 +21,7 @@ router.get('/books/:bookId', auth.authentication, bookController.getBookById) //
 
 router.put('/books/:bookId',auth.authentication,auth.bookAuthorization,bookController.bookUpdate) // update the book data
 
-router.delete('/books/:bookId',auth.authentication,auth.bookAuthorization,bookController.delBookById)  //delete book data by its ID
+router.delete('/books/:bookId', auth.authentication, auth.bookAuthorization, bookController.delBookById)  //delete book data by its ID
 
 /*_________________________----===> REVIEW API <====----_____________________________________ */
 

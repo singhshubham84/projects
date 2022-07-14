@@ -73,7 +73,7 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "releaseAT is required" })
         }
         if (!(isValidDate(releasedAt))) {
-            return res.status(400).send({ status: false, message: "Date must be in the format YYYY-MM-DD" })
+            return res.status(400).send({ status: false, message: 'Date must be in the format "YYYY-MM-DD"' })
         }
 
         const data = await bookModel.create(reqdata)
@@ -206,6 +206,7 @@ const bookUpdate = async function (req, res) {
     try {
         let bookId = req.params.bookId
         if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "BookId invalid" })
+       
         let updateData = req.body
 
         if (!isValidRequestBody(updateData)) return res.status(400).send({
@@ -218,7 +219,7 @@ const bookUpdate = async function (req, res) {
 
         if (!validBook) return res.status(404).send({ status: false, message: "Book not found" })
 
-        if (validBook.isDeleted) { return res.status(404).send({ status: false, message: "Book is already Deleted" }) }
+        if (validBook.isDeleted==true) { return res.status(404).send({ status: false, message: "Book is already Deleted" }) }
         
         if (Object.keys(updateData).indexOf("title") !== -1) {
             if (!isValid(title)) return res.status(400).send({ status: false, message: "Declared title is empty, You need to add some value" })

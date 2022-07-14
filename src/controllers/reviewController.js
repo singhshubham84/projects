@@ -39,7 +39,7 @@ const createReview = async function (req, res) {
         // check if exist or not
         if (!isBook) return res.status(404).send({ status: false, message: 'Book not found' })
         // check if book is deleted
-        if (isBook.isDeleted) return res.status(404).send({ status: false, message: "Book already deleted, can't add review" })
+        if (isBook.isDeleted==true) return res.status(404).send({ status: false, message: "Book already deleted, can't add review" })
         if (!isValid(reviewedAt)) {
             return res.status(400).send({ status: false, message: "reviewedAt is required" })
         }
@@ -111,7 +111,7 @@ const updateReview = async function (req, res) {
 
         if (!isBook) return res.status(404).send({ status: false, message: 'Book not found' })
 
-        if (isBook.isDeleted) return res.status(404).send({ status: false, message: "Book already deleted, can't edit review" })
+        if (isBook.isDeleted==true) return res.status(404).send({ status: false, message: "Book already deleted, can't edit review" })
 
         const isReview = await reviewsModel.findById(reviewId)
 
@@ -119,7 +119,7 @@ const updateReview = async function (req, res) {
 
         if (isReview.bookId.toString() !== bookId) return res.status(404).send({ status: false, message: "ReviewId does not belong to particular book " })
 
-        if (isReview.isDeleted) return res.status(404).send({ status: false, message: "Review already deleted" })
+        if (isReview.isDeleted==true) return res.status(404).send({ status: false, message: "Review already deleted" })
 
         let {
             review,

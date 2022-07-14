@@ -97,7 +97,7 @@
 - Update a book by changing its
   - title
   - excerpt
-  - release date    ---------------------------///NOT DONE YET_________________________________
+  - release date    ---------------------------_______________________________
   - ISBN
 - Make sure the unique constraints are not violated when making the update
 - Check if the bookId exists (must have isDeleted false and is present in collection). If it doesn't, return an HTTP status 404 with a response body like [this](#error-response-structure)
