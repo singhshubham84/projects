@@ -15,10 +15,8 @@ app.use(bodyParser.json());
 
 // =======> AWS Project 
 
-mongoose.connect("mongodb+srv://sahilpayla:T6cALrdO1y8L5HtJ@sahilpaylacluster.h8dndkb.mongodb.net/group11Database?retryWrites=true&w=majority", {
-    useNewUrlParser: true
-})
-.then( () => console.log("MongoDb is connected"))
+mongoose.connect("mongodb+srv://sahilpayla:T6cALrdO1y8L5HtJ@sahilpaylacluster.h8dndkb.mongodb.net/group11Database?retryWrites=true&w=majority", { useNewUrlParser: true })
+// .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )
 
 app.use('/', route);

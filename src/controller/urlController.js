@@ -2,20 +2,24 @@
 const urlModel = require("../model/model.js")
 const shortid = require('shortid');
 const validUrl = require('valid-url');
+
+
 // const ObjectId = require('mongoose').Types.ObjectId;
-// const userModel = require("../models/userModel.js");
 
 // ========> create url
 const createUrl = async function (req, res) {
   try {
     const longUrl = req.body.longUrl
 
+    if (Object.keys( req.body ).length == 0) 
+    { return res.status(400).send({ status: false, message: "Please Provide Url" })} 
     if (!validUrl.isUri(longUrl)) { return res.status(400).send({ status: false, message: "invalid URL" })} 
 
     const str = 'http://localhost:3000/'
     const urlCode = shortid.generate()
     const shortUrl = str + urlCode 
-    const savedData = await urlModel.create({longUrl, shortUrl, urlCode})
+    const savedData = await urlModel.create({ longUrl, urlCode,  shortUrl })
+    // const savedData = await urlModel.findOne().select({})
     return res.status(201).send({ status: true, message: "success", data: savedData })
 
   }
