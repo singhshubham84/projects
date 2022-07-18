@@ -8,19 +8,22 @@ const validUrl = require('valid-url');
 // ========> create url
 const createUrl = async function (req, res) {
   try {
+    if(Object.keys(req.body).length == 0) return res.status(400).send({ status: false, message: "please enter long url"})
     const longUrl = req.body.longUrl
-
     if (!validUrl.isUri(longUrl)) {
       return res.status(400).send({ status: false, message: "invalid URL" })
     }
+
     const isExistUrl = await urlModel.findOne({longUrl});
     if( isExistUrl) {
       return res.status(201).send({status:true, message:"sucess", data: isExistUrl})
     }
-    const str = 'http://localhost:3000/'
+    
+    const str = req.protocol+"://"+req.headers.host +"/";
     const urlCode = shortid.generate()
-    const shortUrl = str + urlCode
-    const savedData = await urlModel.create({ longUrl, shortUrl, urlCode })
+    const shortUrl = str + urlCode.toLowerCase()
+    const savedData = await  urlModel.create({ longUrl, shortUrl, urlCode }).select({longUrl:1,shortUrl:1,urlCode:1,_id:0});
+    
     return res.status(201).send({ status: true, message: "success", data: savedData })
 
   }
