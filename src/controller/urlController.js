@@ -2,23 +2,24 @@
 
 const urlModel = require("../model/model.js")
 const shortid = require('shortid');
-// const validUrl = require('valid-url'); <=== this package is not working
+const validUrl = require('valid-url');    // <=== this package is not working
 const redis = require("redis");
 const { promisify } = require("util");
 
 
 //Connect to redis
 const redisClient = redis.createClient(
-  17807, 
-  "redis-17807.c301.ap-south-1-1.ec2.cloud.redislabs.com",
+  17807,                                                                // <=== port number 
+  "redis-17807.c301.ap-south-1-1.ec2.cloud.redislabs.com",              // <=== redis account link
   { no_ready_check: true }
 );
-redisClient.auth("MASbrdL7RJJtrO9aAZ9J1k7Y2N4PRurC", function (err) {
+
+redisClient.auth("MASbrdL7RJJtrO9aAZ9J1k7Y2N4PRurC", function (err) {   // <=== redis account password
   if (err) throw err;
 });
 
-redisClient.on("connect", async function () {
-  console.log("Connected to Redis..");
+redisClient.on("connect", async function () {                           // <=== telling to redis connect
+  console.log("Connected to Redis..");        
 });
 
 
@@ -88,6 +89,8 @@ const getUrl = async function (req, res) {
       return res.status(302).redirect(cachedLongUrl)
     }
 
+
+    // it will do a DB call here if it will not found in cache
     const getUrl = await urlModel.findOne({ urlCode });
 
     if (!getUrl) { return res.status(404).send({ status: false, message: "URL not found" }) }
