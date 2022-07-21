@@ -6,6 +6,7 @@ const redis = require("redis");
 
 const { promisify } = require("util");
 
+
 //Connect to redis
 const redisClient = redis.createClient(
   17807,
@@ -37,9 +38,10 @@ const createUrl = async function (req, res) {
        
        if(Object.keys(req.body).length == 0) return res.status(400).send({ status: false, message: "please enter long url"})
    
-       if (!validUrl.isUri(longUrl)) {
+       if (!validUrl.isWebUri(longUrl)) {
          return res.status(400).send({ status: false, message: "invalid URL" })
        }
+      
        //If URL already Present
        let cachedLongUrl = await GET_ASYNC(`${longUrl}`)
        if(cachedLongUrl){
@@ -58,11 +60,11 @@ const createUrl = async function (req, res) {
     //   return res.status(200).send({ status: true, message: "url is already genrated", data: save })
     // }
 
-     const str = 'http://localhost:3000/'
+     const baseUrl = 'http://localhost:3000/'
     // const str = req.protocol+"://"+req.headers.host +"/";
    
     const urlCode = shortid.generate()
-    const shortUrl = str + urlCode
+    const shortUrl = baseUrl + urlCode
 
     const urlData = { longUrl, shortUrl, urlCode }
 
@@ -71,7 +73,7 @@ const createUrl = async function (req, res) {
                
       await SET_ASYNC(`${longUrl}`,JSON.stringify(urlData))
   }
-    const savedData = await urlModel.create(urlData)
+     await urlModel.create(urlData)
 
     return res.status(201).send({ status: true, message: "success", data: urlData })
 
