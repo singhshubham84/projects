@@ -60,13 +60,14 @@ const createUrl = async function (req, res) {
     const urlData = { longUrl, shortUrl, urlCode }
 
     //Set cache the newly created url
+
+    await urlModel.create(urlData) 
+
     if(urlData){
                
       await SET_ASYNC(`${longUrl}`,JSON.stringify(urlData))
   }
-     await urlModel.create(urlData)
-
-    await urlModel.create(urlData) 
+    
     return res.status(201).send({ status: true, message: "success", data: urlData })
   }
   catch (err) {
