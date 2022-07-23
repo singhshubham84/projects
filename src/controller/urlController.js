@@ -1,8 +1,6 @@
-
-
 const urlModel = require("../model/model.js")
 const shortid = require('shortid');
-const validUrl = require('valid-url');    // <=== this package is not working
+const validUrl = require('valid-url');   
 const redis = require("redis");
 const { promisify } = require("util");
 
@@ -81,7 +79,7 @@ const getUrl = async function (req, res) {
 
     const urlCode = req.params.urlCode
 
-    if (!shortid.isValid(urlCode)) { return res.status(400).send({ status: false, message: "invalid URL" }) }
+    if (!shortid.isValid(urlCode)) { return res.status(400).send({ status: false, message: "invalid URL CODE" }) }
     let cachedUrlCode = await GET_ASYNC(`${urlCode}`)
 
     if (cachedUrlCode) {
