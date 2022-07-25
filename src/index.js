@@ -2,9 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const route = require('./route/route.js');
 const mongoose= require('mongoose');
+const multer = require("multer")
 const app = express();
 
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
+app.use(multer().any()) 
 
 mongoose.connect("mongodb+srv://BishuPanda:KEzGyGmSt4rBna87@cluster0.qkauz0y.mongodb.net/group18Database?retryWrites=true&w=majority")
 .then( () => console.log("MongoDb is connected"))
