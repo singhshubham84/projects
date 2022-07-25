@@ -67,8 +67,38 @@ const createUser = async function (req, res) {
 
     }
 }
+const getUserDetails = async function (req, res) {
 
+  try {
+
+      const userId = req.params.userId
+      const userIdFromToken = req.userId
+
+
+      if (!isValidObjectId(userId)) {
+          return res.status(400).send({ status: false, message: "Invalid userId" })
+      }
+
+      const findUserDetails = await userModel.findById(userId)
+
+      if (!findUserDetails) {
+          return res.status(404).send({ status: false, message: "User Not Found" })
+      }
+
+      if (findUserDetails._id.toString() != userIdFromToken) {
+          return res.status(403).send({ status: false, message: "You Are Not Authorized" });
+      }
+
+      return res.status(200).send({ status: true, message: "Profile Fetched Successfully", data: findUserDetails })
+
+  } catch (err) {
+
+      return res.status(500).send({ status: false, error: err.message })
+
+  }
+}
 
 
   module.exports.createUser = createUser
   module.exports.userLogin = userLogin
+  module.exports.getUserDetails=getUserDetails
