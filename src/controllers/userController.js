@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const { isValid, isValidObjectId,isValidRequestBody ,isValidEmail,isValidName,isValidPassword,isValidPincode,isValidPhone,uploadFile } = require('../validator/validator')
 
 
@@ -32,12 +33,18 @@ const mobile = (ele) => {
     return phoneRegex.test(ele);
 };
 
+const validateEmail = (email) => {
+    return email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+  };
+
 
 
 const createUser = async function (req, res) {
     try {
-      let files=req.files
-      let userImage = await uploadFile(files[0]);
+      // let files=req.files
+      // let userImage = await uploadFile(files[0]);
 
 
         let data = req.body;
@@ -46,23 +53,23 @@ const createUser = async function (req, res) {
         let { fname, lname, email, phone, password, address } = data
         if ((message = check(fname))) { return res.status(400).send({ status: false, message: `fname ${message}` }) }
         // fname = fname.trim()
-        if ((message = name(fname))) { return res.status(400).send({ status: false, message: `please enter a valid fname` }) }
+        if ((!name(fname))) { return res.status(400).send({ status: false, message: `please enter a valid fname` }) }
 
         if ((message = check(fname))) { return res.status(400).send({ status: false, message: `lname ${message}` }) }
-        lname = lname.trim()
-        if ((message = name(lname))) { return res.status(400).send({ status: false, message: `please enter a valid lname` }) }
+        // lname = lname.trim()
+        if ((!name(lname))) { return res.status(400).send({ status: false, message: `please enter a valid lname` }) }
 
         if ((message = check(email))) { return res.status(400).send({ status: false, message: `email ${message}` }) }
-        email = email.trim()
-        if ((message = name(email))) { return res.status(400).send({ status: false, message: `please enter a valid email` }) }
+        // email = email.trim()
+        if ((!validateEmail(email))) { return res.status(400).send({ status: false, message: `please enter a valid email` }) }
 
         if ((message = check(phone))) { return res.status(400).send({ status: false, message: `phone no. ${message}` }) }
-        phone = phone.trim()
-        if ((message = mobile(phone))) { return res.status(400).send({ status: false, message: `please enter a valid phone no.` }) }
+        // phone = phone.trim()
+        if ((!mobile(phone))) { return res.status(400).send({ status: false, message: `please enter a valid phone no.` }) }
 
         if ((message = check(password))) { return res.status(400).send({ status: false, message: `password ${message}` }) }
-        password = password.trim()
-        if ((message = pass(password))) { return res.status(400).send({ status: false, message: `please enter a valid password` }) }
+        // password = password.trim()
+        if ((!pass(password))) { return res.status(400).send({ status: false, message: `please enter a valid password` }) }
 
 
         if ((message = check(address.shipping.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
@@ -84,17 +91,20 @@ const createUser = async function (req, res) {
         let duplicatePhone = await userModel.findOne({ phone });
         if (duplicatePhone) { return res.status(400).send({ status: false, message: "phone no. is already registered" }) }
 
-        //const pas = new User(body);
+        // //const pas = new User(body);
         // const salt = await bcrypt.genSalt(10);
-        hashPassword = await bcrypt.hash(password, 10);
+        // password = await bcrypt.hash(password, salt);
+        // await password.save()
 
-        data.profileImage = userImage
-        data.password = hashPassword
-        // password.save()
+    const salt = await bcrypt.genSalt(10);
+    hashPassword = await bcrypt.hash(password, salt);
+    // data.profileImage = userImage
+    data.password = hashPassword
 
-        let userData = await userModel.create(data);
 
-        res.status(201).send({ status: true, message: "user Successfully created", data: userData });
+    let userData = await userModel.create(data);
+    res.status(201).send({ status: true, message: "user Successfully created", data: userData })
+
     } catch (err) {
         res.status(500).send({ msg: err.message });
     }
