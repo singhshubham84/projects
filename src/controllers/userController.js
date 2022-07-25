@@ -84,11 +84,6 @@ const createUser = async function (req, res) {
         let duplicatePhone = await userModel.findOne({ phone });
         if (duplicatePhone) { return res.status(400).send({ status: false, message: "phone no. is already registered" }) }
 
-        // //const pas = new User(body);
-        // const salt = await bcrypt.genSalt(10);
-        // password = await bcrypt.hash(password, salt);
-        // await password.save()
-
     data = new userModel(data);
     const salt = await bcrypt.genSalt(10);
     data.password = await bcrypt.hash(data.password, salt);
