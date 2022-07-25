@@ -10,11 +10,12 @@ const isValid = function (value) {
 const isValidObjectId = function (objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
-
+//to check id is valid or not
 
 const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0; 
 };
+//to check any  data available or not
 const isValidName = function (name) {
     let nameRegex = /^[.a-zA-Z\s,-]+$/
     return nameRegex.test(name)
@@ -36,6 +37,7 @@ const isValidPincode = function (pincode) {
     let pincodeRegex = /^\d{6}$/
     return pincodeRegex.test(pincode)
 }
+// pincode should be 6 digit
 
 const isValidPassword = function (password) {
     let passwordregex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[a-zA-Z!#@$%&? "])[a-zA-Z0-9!#@$%&?]{8,15}$/
