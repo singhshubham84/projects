@@ -5,7 +5,7 @@ const userAuthentication = async function(req, res, next){
 
     try {
 
-        const token = req.headers.authorization
+        const token = req.authorization
 
         if (!token) {
         return res.status(400).send({ status: false, message: `Token Not Found` })}
