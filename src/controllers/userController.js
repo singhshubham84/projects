@@ -86,9 +86,63 @@ const createUser = async function (req, res) {
         let userData = await userModel.create(data);
 
         res.status(201).send({ status: true, message: "user Successfully created", data: userData });
-
     } catch (err) {
         res.status(500).send({ msg: err.message });
     }
+
 };
-module.exports.createUser = createUser
+
+  const userLogin = async function (req, res) {
+
+    try {
+
+        const loginDetails = req.body;
+
+        const { email, password } = loginDetails;
+
+        if (!isValidRequestBody(loginDetails)) {
+            return res.status(400).send({ status: false, message: 'Please provide login details' })
+        }
+
+        if (!isValid(email)) {
+            return res.status(400).send({ status: false, message: 'Email-Id is required' })
+        }
+        if(!isValidEmail(email)){
+          return res.status(400).send({ status: false, message: 'provide valid email id' })
+        }
+
+
+        if (!isValid(password)) {
+            return res.status(400).send({ status: false, message: 'Password is required' })
+        }
+        if(!isValidPassword(password)){
+          return res.status(400).send({ status: false, message: 'Provide valid password its should contain atleast  one-lowercase, one uppercase,one numeric ' })
+        }
+
+        const userData = await userModel.findOne({ email });
+
+        if (!userData) {
+            return res.status(401).send({ status: false, message: `Login failed Email-Id is incorrect.` });
+        }
+
+        const checkPassword = await bcrypt.compare(password, userData.password)
+
+        if (!checkPassword) return res.status(401).send({ status: false, message: `Login failed password is incorrect.` });
+        
+        let userId=userData._id
+        const token = jwt.sign({
+            userId: userId,
+            iat: Math.floor(Date.now() / 1000),
+            exp: Math.floor(Date.now() / 1000)  +  24 * 60 * 60
+        }, 'ProjectNo-5')
+
+        return res.status(200).send({ status: true, message: "Login Successful", data: {Token:token} });
+
+    } catch (err) {
+
+        return res.status(500).send({ status: false, error: err.message });
+
+    }
+}
+  module.exports.createUser = createUser
+  module.exports.userLogin = userLogin
