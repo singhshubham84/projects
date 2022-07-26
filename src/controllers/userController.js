@@ -12,7 +12,7 @@ const body = (ele) => {
 const check = (ele) => {
     if (ele == undefined) { return `is missing` }
     if (typeof ele != "string") { return `should must be a string` }
-    ele = ele.trim();
+    // ele = ele.trim();
     if (!ele.length) { return `isn't valid` }
     if (ele.match("  ")) return `can't have more than one consecutive spaces'`;
 };
@@ -43,8 +43,9 @@ const validateEmail = (email) => {
 
 const createUser = async function (req, res) {
     try {
-      // let files=req.files
-      // let userImage = await uploadFile(files[0]);
+      let files=req.files
+      
+      let userImage = await uploadFile(files[0]);
 
 
         let data = req.body;
@@ -63,42 +64,42 @@ const createUser = async function (req, res) {
         // email = email.trim()
         if ((!validateEmail(email))) { return res.status(400).send({ status: false, message: `please enter a valid email` }) }
 
+        let duplicateEmail = await userModel.findOne({ email });
+        if (duplicateEmail) { return res.status(400).send({ status: false, message: "Email is already registered" }) }
+
         if ((message = check(phone))) { return res.status(400).send({ status: false, message: `phone no. ${message}` }) }
         // phone = phone.trim()
         if ((!mobile(phone))) { return res.status(400).send({ status: false, message: `please enter a valid phone no.` }) }
+
+        let duplicatePhone = await userModel.findOne({ phone });
+        if (duplicatePhone) { return res.status(400).send({ status: false, message: "phone no. is already registered" }) }
 
         if ((message = check(password))) { return res.status(400).send({ status: false, message: `password ${message}` }) }
         // password = password.trim()
         if ((!pass(password))) { return res.status(400).send({ status: false, message: `please enter a valid password` }) }
 
 
-        if ((message = check(address.shipping.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
+        // if ((message = check(address.shipping.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
 
-        if ((message = check(address.shipping.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
+        // if ((message = check(address.shipping.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
 
-        let pincodeReg = /^[1-9][0-9]{5}$/;
-        if (!pincodeReg.test(address.shipping.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
+        // let pincodeReg = /^[1-9][0-9]{5}$/;
+        // if (!pincodeReg.test(address.shipping.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
 
-        if ((message = check(address.billing.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
+        // if ((message = check(address.billing.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
 
-        if ((message = check(address.billing.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
+        // if ((message = check(address.billing.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
 
-        if (!pincodeReg.test(address.billing.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
+        // if (!pincodeReg.test(address.billing.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
 
-        let duplicateEmail = await userModel.findOne({ email });
-        if (duplicateEmail) { return res.status(400).send({ status: false, message: "Email is already registered" }) }
+        
 
-        let duplicatePhone = await userModel.findOne({ phone });
-        if (duplicatePhone) { return res.status(400).send({ status: false, message: "phone no. is already registered" }) }
+        
 
-        // //const pas = new User(body);
-        // const salt = await bcrypt.genSalt(10);
-        // password = await bcrypt.hash(password, salt);
-        // await password.save()
 
     const salt = await bcrypt.genSalt(10);
     hashPassword = await bcrypt.hash(password, salt);
-    // data.profileImage = userImage
+    data.profileImage = userImage
     data.password = hashPassword
 
 
@@ -149,9 +150,10 @@ const createUser = async function (req, res) {
         if (!checkPassword) return res.status(401).send({ status: false, message: `Login failed password is incorrect.` });
         
         let userId=userData._id
+
         const token = jwt.sign({
             userId: userId,
-            iat: Math.floor(Date.now() / 1000),
+            iat: Math.floor(Date.now() / 1000) ,
             exp: Math.floor(Date.now() / 1000)  +  24 * 60 * 60
         }, 'ProjectNo-5')
 
@@ -168,7 +170,7 @@ const getUserDetails = async function (req, res) {
   try {
 
       const userId = req.params.userId
-      const userIdFromToken = req.userId
+      // const userIdFromToken = req.userId
 
 
       if (!isValidObjectId(userId)) {
@@ -181,9 +183,9 @@ const getUserDetails = async function (req, res) {
           return res.status(404).send({ status: false, message: "User Not Found" })
       }
 
-      if (findUserDetails._id.toString() != userIdFromToken) {
-          return res.status(403).send({ status: false, message: "You Are Not Authorized" });
-      }
+      // if (findUserDetails._id.toString() != userIdFromToken) {
+      //     return res.status(403).send({ status: false, message: "You Are Not Authorized" });
+      // }
 
       return res.status(200).send({ status: true, message: "Profile Fetched Successfully", data: findUserDetails })
 
