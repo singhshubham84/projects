@@ -5,11 +5,15 @@ const userAuthentication = async function(req, res, next){
 
     try {
 
-        const token = req.Authorization
-        console.log(token)
+        let bearerHeader = req.headers.authorization;
+        if(typeof bearerHeader == "undefined") return res.status(400).send({ status: false, message: "Token is missing" });
+        // console.log(bearerHeader)
+        let bearerToken = bearerHeader.split(' ');
+        // console.log(bearerToken)
+        let token = bearerToken[1];
 
-        if (!token) {
-        return res.status(400).send({ status: false, message: `Token Not Found` })}
+        // if (!token) {
+        // return res.status(400).send({ status: false, message: `Token Not Found` })}
 
 
         let decodeToken = jwt.verify(token, 'ProjectNo-5')

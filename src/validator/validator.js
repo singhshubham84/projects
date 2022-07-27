@@ -17,7 +17,7 @@ const isValidRequestBody = function (requestBody) {
 };
 //to check any  data available or not
 const isValidName = function (name) {
-    let nameRegex = /^[.a-zA-Z\s,-]+$/
+    let nameRegex = /^[a-zA-z]*$/
     return nameRegex.test(name)
 }
 //regex for name 
@@ -45,6 +45,13 @@ const isValidPassword = function (password) {
 
 }
 //  One digit, one upper case , one lower case , its b/w 8 to 15
+
+const isValidCity = function (city) {
+    let cityRegex = /^[a-zA-z]+([\s][a-zA-Z]+)*$/
+
+    return cityRegex.test(city)
+}
+
 
 aws.config.update({
     accessKeyId: "AKIAY3L35MCRVFM24Q7U",
@@ -76,4 +83,4 @@ let uploadFile= async ( file) =>{
 
 
 
-module.exports = { isValid, isValidObjectId,isValidRequestBody ,isValidEmail,isValidName,isValidPassword,isValidPincode,isValidPhone,uploadFile }
+module.exports = { isValid, isValidObjectId,isValidRequestBody ,isValidEmail,isValidName,isValidPassword,isValidPincode,isValidPhone,isValidCity, uploadFile }
