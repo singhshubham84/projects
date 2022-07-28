@@ -143,10 +143,10 @@ const createUser = async function (req, res) {
         if (!isValid(address)) {
             return res.status(400).send({ status: false, message: "Address is required" })
         }
-        console.log(address)
+        // console.log(address)
 
         let userAddress = JSON.parse(address)
-        console.log(userAddress)
+        // console.log(userAddress)
         data.address = userAddress
 
         if (!isValid(data.address.shipping && data.address.billing)) {
@@ -183,9 +183,6 @@ const createUser = async function (req, res) {
         if (!isValidPincode(data.address.billing.pincode)) {
             return res.status(400).send({ status: false, message: "Please provide valid address billing pincode" })
         }
-
-
-
 
         const salt = await bcrypt.genSalt(10);
         hashPassword = await bcrypt.hash(password, salt);
@@ -387,6 +384,8 @@ const updateUserDetails = async function (req, res) {
 
 
         if (address) {
+            
+            address = JSON.parse(userDetails.address)
 
             if (!isValid(address)) {
                 return res.status(400).send({ status: false, message: 'Address is Required' })
