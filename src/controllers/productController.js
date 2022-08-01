@@ -79,7 +79,7 @@ const createProduct = async function(req,res){
         if (!isValid(availableSizes)) {
             return res.status(400).send({ status: false, message: "Available Size is required" })
         }
-        
+
         let sizes = availableSizes.split(",").map(x => x.trim())
         sizes.forEach((size) => {
               let arr = ["S", "XS","M","X", "L","XXL", "XL"]
@@ -111,17 +111,14 @@ const getAllProducts = async function (req, res) {
         let filterData = {}
         filterData.isDeleted = false
 
-
-       
         if (inputs.size) {
 
             if (!isValid(inputs.size)) {
                 return res.status(400).send({ status: false, msg: "Please Provide a Valid Size!" })
             }
-
             let sizes = inputs.size.split(",").map(x => x.trim())
 
-            filterData.availableSizes = sizes
+            filterData.availableSizes = {$in: sizes}
         }
         
         if (inputs.name) {
@@ -129,20 +126,17 @@ const getAllProducts = async function (req, res) {
             if (!isValid(inputs.name)) {
                 return res.status(400).send({ status: false, msg: "Please Provide a Name Of the Product!" })
             }
-
             filterData.title = { $regex: inputs.name, $options: "i" } 
-
         }
 
-       
         if (inputs.priceGreaterThan && inputs.priceLessThan) {
 
             if (!isValid(inputs.priceGreaterThan)) {
-                return res.status(400).send({ status: false, msg: "Please Provide a Lowest Price Of the Product!" })
+                return res.status(400).send({ status: false, msg: "Please Provide a Highest Price Of the Product!" })
             }
 
             if (!isValid(inputs.priceLessThan)) {
-                return res.status(400).send({ status: false, msg: "Please Provide a Highest Price Of the Product!" })
+                return res.status(400).send({ status: false, msg: "Please Provide a Lowest Price Of the Product!" })
             }
 
             filterData.price = { $gte: inputs.priceGreaterThan, $lte: inputs.priceLessThan }
@@ -218,7 +212,7 @@ const updateProduct = async function (req, res) {
         }
 
         const productData = await productModel.findById(productId)
-        console.log(productData)
+        // console.log(productData)
 
         if (!productData) {
             return res.status(404).send({ status: false, message: "product not found" })
