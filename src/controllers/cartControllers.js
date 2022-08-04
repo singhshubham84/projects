@@ -28,7 +28,7 @@ const createCart = async function (req, res) {
             return res.status(400).send({ status: false, msg: "userId not exist" })
         }
 
-        if (findUser._id.toString() != userIdFromToken) { return res.status(401).send({ status: false, message: `authentication fail ` }) }
+        if (findUser._id.toString() != userIdFromToken) { return res.status(403).send({ status: false, message: `authentication fail ` }) }
 
         const findProduct = await productModel.findOne({ _id: productId, isDeleted: false })
         if (!findProduct) {
@@ -130,7 +130,7 @@ const updateCart = async function (req, res) {
 
             return res.status(400).send({ status: false, message: "Provide Valid Cart Id" });
         }
-        if (userId != userIdFromToken) { return res.status(401).send({ status: false, message: `you are not authorise ` }) }
+        if (userId != userIdFromToken) { return res.status(403).send({ status: false, message: `you are not authorise ` }) }
 
         if (!isValidRequestBody(data)) {
             return res.status(400).send({ status: false, message: "Please provide details to remove product from cart " });
@@ -219,7 +219,7 @@ const getCartData = async function (req, res) {
         const userFind = await userModel.findById({ _id: userId })
         if (!userFind) { return res.status(400).send({ status: false, message: `User does not exists by this userId ` }) }
 
-        if (userFind._id.toString() != userIdFromToken) { return res.status(401).send({ status: false, message: `authentication fail ` }) }
+        if (userFind._id.toString() != userIdFromToken) { return res.status(403).send({ status: false, message: `authentication fail ` }) }
 
         const cartFind = await cartModel.findOne({ userId: userId })
 
@@ -243,7 +243,7 @@ const deleteCart = async function (req, res) {
         const userFind = await userModel.findOne({ _id: userId })
         if (!userFind) { return res.status(400).send({ status: false, message: `User does not exists by this userId ` }) }
 
-        if (userFind._id.toString()!= userIdFromToken) { return res.status(401).send({ status: false, message: `authentication fail` }) }
+        if (userFind._id.toString()!= userIdFromToken) { return res.status(403).send({ status: false, message: `authentication fail` }) }
 
         const cartFind = await cartModel.findOne({ userId: userId })
         if (!cartFind) { return res.status(400).send({ status: false, message: `Cart does not exists by this userId ` }) }
