@@ -20,9 +20,9 @@ router.get('/products/:productId',productController.getProductById)
 router.put('/products/:productId',productController.updateProduct)
 router.delete('/products/:productId',productController.deleteProduct)
 
-/**_____________________________________________________________________________________ */
+/**________________________----===> CART API <====----________________________________________ */
 router.post('/users/:userId/cart',auth.userAuthentication, cartController.createCart)
-router.put('/users/:userId/cart',cartController.updateCart)
+router.put('/users/:userId/cart',auth.userAuthentication,cartController.updateCart)
 router.get('/users/:userId/cart', auth.userAuthentication, cartController.getCartData)
 router.delete('/users/:userId/cart', auth.userAuthentication, cartController.deleteCart)
 

@@ -47,7 +47,7 @@ const createProduct = async function(req,res){
           
           if((message = check(title))) {return res.status(400).send({status:false,message:`title ${message}`})}
 
-          if((!name(title))) {return res.status(400).send({status:false,message:"invalid title"})}
+        //   if((!name(title))) {return res.status(400).send({status:false,message:"invalid title"})}
 
           let duplicateTitle = await productModel.findOne({ title })
 
