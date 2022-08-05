@@ -65,9 +65,9 @@ const createProduct = async function(req,res){
 
           if(currencyId != "INR") return res.status(400).send({status:false, message: "it only take INR as currencyId"})
 
-        //   if(currencyFormat == undefined) return res.status(400).send({status:false, message: "currency format is missing"})
+          if(currencyFormat == undefined) return res.status(400).send({status:false, message: "currency format is missing"})
 
-        //   if( (typeof (currencyFormat != "string")) && (currencyFormat != "₹")) return res.status(400).send({status:false, message: "it only take '₹' as currencyFormat"})
+          if(currencyFormat != "₹") return res.status(400).send({status:false, message: "it only take '₹' as currencyFormat"})
          
              data.currencyFormat = currencySymbol(currencyId)
 

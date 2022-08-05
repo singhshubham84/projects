@@ -1,5 +1,5 @@
 const userModel = require("../models/userModel")
-const productModel = require("../models/productModel")
+// const productModel = require("../models/productModel")
 const cartModel = require("../models/cartModel")
 const orderModel = require('../models/orderModel')
 const { isValid, isValidObjectId, isValidRequestBody } = require("../validator/validator")
@@ -35,7 +35,9 @@ const createOrder = async function (req, res) {
         if (!isValidObjectId(cartId)) {
             return res.status(400).send({ status: false, Message: ' Please provide a valid cartId' })
         }
-
+        if (typeof cancellable != "boolean") {
+            return res.status(400).send({ status: false, message: `Cancellable must be either 'true' or 'false'.` });
+        }
         const cart = await cartModel.findOne({ userId })
         if (!cart) {
             return res.status(404).send({ status: false, Message: ' user cart unavailable' })
@@ -53,7 +55,9 @@ const createOrder = async function (req, res) {
 
         res.status(201).send({ status: true, Message: ' sucesfully created order', data: createProduct })
 
-    } catch (error) { res.status(500).send({ status: false, Message: error.message }) }
+    } catch (error) {
+        return res.status(500).send({ status: false, Message: error.message })
+    }
 }
 
 const updateOrder = async function (req, res) {
@@ -121,29 +125,31 @@ const updateOrder = async function (req, res) {
                 return res.status(400).send({ status: false, message: "Order is already completed." })
             }
             const orderStatus = await orderModel.findOneAndUpdate({ _id: orderId },
-                { $set: { items: [], totalPrice: 0, totalItems: 0, totalQuantity: 0, status } }, { new: true });
+                { $set: { items: [], totalPrice: 0, totalItems: 0, totalQuantity: 0, status:'completed' } }, { new: true });
             return res.status(200).send({ status: true, message: "order completed successfully", data: orderStatus })
         }
 
+
+
         if (status === 'cancelled') {
-
-            if (status === 'cancelled') {
-                if (findOrder.cancellable == false) {
-                    return res.status(400).send({ status: false, message: "Item can not be cancelled, because it is not cancellable." })
-                }
-
-                if (findOrder.status === 'cancelled') {
-                    return res.status(400).send({ status: false, message: "Order is already cancelled." })
-                }
-                const findOrderAfterDeletion = await orderModel.findOneAndUpdate({ _id: orderId },
-                    { $set: { items: [], totalPrice: 0, totalItems: 0, totalQuantity: 0, status: 'cancelled' } }, { new: true })
-                return res.status(200).send({ status: true, message: "Order is cancelled successfully", data: findOrderAfterDeletion })
+            if (findOrder.cancellable == false) {
+                return res.status(400).send({ status: false, message: "Item can not be cancelled, because it is not cancellable." })
             }
+            if (findOrder.status === 'completed') {
+                return res.status(400).send({ status: false, message: "Order is already completed." })
+            }
+
+            if (findOrder.status === 'cancelled') {
+                return res.status(400).send({ status: false, message: "Order is already cancelled." })
+            }
+            const findOrderAfterDeletion = await orderModel.findOneAndUpdate({ _id: orderId },
+                { $set: { items: [], totalPrice: 0, totalItems: 0, totalQuantity: 0, status: 'cancelled' } }, { new: true })
+            return res.status(200).send({ status: true, message: "Order is cancelled successfully", data: findOrderAfterDeletion })
         }
+
     }
     catch (err) {
-        console.log(err)
-        res.status(500).send({ message: err.message })
+        return res.status(500).send({ message: err.message })
     }
 }
 
