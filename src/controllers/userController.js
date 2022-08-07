@@ -4,41 +4,6 @@ const jwt = require('jsonwebtoken')
 const { isValid, isValidObjectId, isValidRequestBody, isValidEmail, isValidName, isValidPassword, isValidPincode, isValidPhone,isValidCity, uploadFile } = require('../validator/validator')
 
 
-// const body = (ele) => {
-//     if (Object.keys(ele).length) return;
-//     return `Please send some valid data in request body`;
-// };
-
-// const check = (ele) => {
-//     if (ele == undefined) { return `is missing` }
-//     if (typeof ele != "string") { return `should must be a string` }
-//     // ele = ele.trim();
-//     if (!ele.length) { return `isn't valid` }
-//     if (ele.match("  ")) return `can't have more than one consecutive spaces'`;
-// };
-
-// const name = (ele) => {
-//     let regEx = /^[a-zA-z]*$/;
-//     return regEx.test(ele);
-// };
-
-// const pass = (ele) => {
-//     const passwordRegex =
-//         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/;
-//     return passwordRegex.test(ele);
-// };
-
-// const mobile = (ele) => {
-//     const phoneRegex = /^[6-9]\d{9}$/;
-//     return phoneRegex.test(ele);
-// };
-
-// const validateEmail = (email) => {
-//     return email.match(
-//         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-//     );
-// };
-
 
 
 const createUser = async function (req, res) {
@@ -51,48 +16,6 @@ const createUser = async function (req, res) {
         let userImage = await uploadFile(files[0]);
         let data = req.body;
         let { fname, lname, email, phone, password, address } = data
-        // let message;
-        // if ((message = body(data))) { return res.status(400).send({ status: false, message: message }) };
-       
-        // if ((message = check(fname))) { return res.status(400).send({ status: false, message: `fname ${message}` }) }
-        // // fname = fname.trim()
-        // if ((!name(fname))) { return res.status(400).send({ status: false, message: `please enter a valid fname` }) }
-
-        // if ((message = check(fname))) { return res.status(400).send({ status: false, message: `lname ${message}` }) }
-        // // lname = lname.trim()
-        // if ((!name(lname))) { return res.status(400).send({ status: false, message: `please enter a valid lname` }) }
-
-        // if ((message = check(email))) { return res.status(400).send({ status: false, message: `email ${message}` }) }
-        // // email = email.trim()
-        // if ((!validateEmail(email))) { return res.status(400).send({ status: false, message: `please enter a valid email` }) }
-
-        // let duplicateEmail = await userModel.findOne({ email });
-        // if (duplicateEmail) { return res.status(400).send({ status: false, message: "Email is already registered" }) }
-
-        // if ((message = check(phone))) { return res.status(400).send({ status: false, message: `phone no. ${message}` }) }
-        // // phone = phone.trim()
-        // if ((!mobile(phone))) { return res.status(400).send({ status: false, message: `please enter a valid phone no.` }) }
-
-        // let duplicatePhone = await userModel.findOne({ phone });
-        // if (duplicatePhone) { return res.status(400).send({ status: false, message: "phone no. is already registered" }) }
-
-        // if ((message = check(password))) { return res.status(400).send({ status: false, message: `password ${message}` }) }
-        // // password = password.trim()
-        // if ((!pass(password))) { return res.status(400).send({ status: false, message: `please enter a valid password` }) }
-
-
-        // if ((message = check(address.shipping.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
-
-        // if ((message = check(address.shipping.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
-
-        // let pincodeReg = /^[1-9][0-9]{5}$/;
-        // if (!pincodeReg.test(address.shipping.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
-
-        // if ((message = check(address.billing.street))) { return res.status(400).send({ status: false, message: `street ${message}` }) }
-
-        // if ((message = check(address.billing.city))) { return res.status(400).send({ status: false, message: `city ${message}` }) }
-
-        // if (!pincodeReg.test(address.billing.pincode)) { return res.status(400).send({ status: false, message: `pincode isn't valid` }); }
 
         if (!isValidRequestBody(data)) {
             return res.status(400).send({ status: false, message: "please provide valid user Details" })
@@ -143,10 +66,10 @@ const createUser = async function (req, res) {
         if (!isValid(address)) {
             return res.status(400).send({ status: false, message: "Address is required" })
         }
-        // console.log(address)
+
 
         let userAddress = JSON.parse(address)
-        // console.log(userAddress)
+        
         data.address = userAddress
 
         if (!isValid(data.address.shipping && data.address.billing)) {

@@ -1,5 +1,4 @@
 const userModel = require("../models/userModel")
-// const productModel = require("../models/productModel")
 const cartModel = require("../models/cartModel")
 const orderModel = require('../models/orderModel')
 const { isValid, isValidObjectId, isValidRequestBody } = require("../validator/validator")
