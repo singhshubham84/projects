@@ -12,7 +12,7 @@ const createUser = async function (req, res) {
         if (!files) {
             return res.status(400).send({ status: false, message: "Profile Image is required" })
         }
-
+        //  console.log(files)
         let userImage = await uploadFile(files[0]);
         let data = req.body;
         let { fname, lname, email, phone, password, address } = data
@@ -109,6 +109,7 @@ const createUser = async function (req, res) {
 
         const salt = await bcrypt.genSalt(10);
         hashPassword = await bcrypt.hash(password, salt);
+
         data.profileImage = userImage
         data.password = hashPassword
 
@@ -167,7 +168,7 @@ const userLogin = async function (req, res) {
             exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60
         }, 'ProjectNo-5')
 
-        return res.status(200).send({ status: true, message: "Login Successful", data: { Token: token } });
+        return res.status(200).send({ status: true, message: "Login Successful", data: { userId:userId,Token: token } });
 
     } catch (err) {
 
@@ -229,7 +230,7 @@ const updateUserDetails = async function (req, res) {
         }
 
         if (userData._id.toString() != userIdFromToken) {
-            return res.status(403).send({ status: false, message: "You Are Not Authorized!!" })
+            return res.status(403).send({ status: false, message: "You Are Not Authorized" })
         }
 
         let { fname, lname, email, phone, password, address, profileImage } = userDetails

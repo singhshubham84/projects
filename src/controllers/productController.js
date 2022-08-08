@@ -1,7 +1,5 @@
 const productModel = require('../models/productModel')
-
 const {uploadFile, isValid,isValidObjectId,isValidRequestBody} = require('../validator/validator')
-
 const currencySymbol = require("currency-symbol-map")
 
 const body = (ele) => {
@@ -34,10 +32,11 @@ const createProduct = async function(req,res){
 
     try {
         let files=req.files
+        if (!files) {
+            return res.status(400).send({ status: false, message: "Profile Image is required" })
+        }
         
         let ProductImage = await uploadFile(files[0]);
-  
-  
           let data = req.body;
           let message;
           if ((message = body(data))) { return res.status(400).send({ status: false, message: `${message}` }) };
@@ -203,6 +202,7 @@ const updateProduct = async function (req, res) {
 
     try {
         const updatedData = req.body
+
         const productId = req.params.productId
         let files = req.files;
 
@@ -218,9 +218,7 @@ const updateProduct = async function (req, res) {
             return res.status(404).send({ status: false, message: "product not found" })
         }
 
-        if (!isValidRequestBody(updatedData)) {
-            return res.status(400).send({ status: false, message: "please provide product details to update" })
-        }
+        
 
         const { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments, productImage } = updatedData
 
@@ -240,7 +238,6 @@ const updateProduct = async function (req, res) {
             
         }
         
-
         if (description) {
 
             if (!isValid(description)) {
@@ -250,7 +247,6 @@ const updateProduct = async function (req, res) {
             productData.description = description
             
         }
-
         
         if (price) {
 
@@ -371,9 +367,9 @@ const getProductById = async function(req,res){
     
     let findProduct = await productModel.findById({_id:productId})
 
-    if(!findProduct) {return res.status(200).send({status:false, message: "No product exists with is Product id"})}
+    if(!findProduct) {return res.status(404).send({status:false, message: "No product exists with is Product id"})}
 
-    if(findProduct.isDeleted) {return res.status(200).send({status:false, message: "product is already deleted"})}
+    if(findProduct.isDeleted) {return res.status(404).send({status:false, message: "product is already deleted"})}
 
     return res.status(200).send({ status: true, data: findProduct });
     
@@ -396,7 +392,7 @@ const deleteProduct = async function (req, res) {
             return res.status(400).send({ status: false, message: `Product not Found` })
         }
         if(product.isDeleted == true){
-            return res.status(400).send({ status: false, message: `Product already deleted.` })
+            return res.status(404).send({ status: false, message: `Product already deleted.` })
         }
         if (product.isDeleted == false) {
             await productModel.findOneAndUpdate({ _id: productId }, { $set: { isDeleted: true, deletedAt: new Date() } },{new:true})
@@ -404,8 +400,6 @@ const deleteProduct = async function (req, res) {
             return res.status(200).send({ status: true, message: `Product deleted successfully.` })
         }
         return res.status(400).send({ status: true, message: `Product has been already deleted.` })
-
-
 
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message })

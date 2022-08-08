@@ -134,7 +134,6 @@ const updateCart = async function (req, res) {
         let index = cart.items.indexOf(productArr[0]);
 
         if (removeProduct == 0) {
-
             cart.totalPrice = cart.totalPrice - findProduct.price * cart.items[index].quantity
             cart.items.splice(index, 1)
             cart.totalItems = cart.items.length
@@ -142,7 +141,6 @@ const updateCart = async function (req, res) {
         }
 
         if (removeProduct == 1) {
-
             cart.items[index].quantity -= 1;
             cart.totalPrice = cart.totalPrice - findProduct.price
             if (cart.items[index].quantity == 0) {
@@ -159,8 +157,6 @@ const updateCart = async function (req, res) {
     }
 
 }
-
-
 
 
 const getCartData = async function (req, res) {
