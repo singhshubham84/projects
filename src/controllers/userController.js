@@ -1,7 +1,7 @@
 const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { isValid, isValidObjectId, isValidRequestBody, isValidEmail, isValidName, isValidPassword, isValidPincode, isValidPhone,isValidCity, uploadFile } = require('../validator/validator')
+const { isValid, isValidObjectId, isValidRequestBody, isValidEmail, isValidName, isValidPassword, isValidPincode, isValidPhone, isValidCity, uploadFile } = require('../validator/validator')
 
 
 
@@ -9,11 +9,13 @@ const { isValid, isValidObjectId, isValidRequestBody, isValidEmail, isValidName,
 const createUser = async function (req, res) {
     try {
         let files = req.files
+
         if (!files) {
             return res.status(400).send({ status: false, message: "Profile Image is required" })
         }
-        //  console.log(files)
+
         let userImage = await uploadFile(files[0]);
+        
         let data = req.body;
         let { fname, lname, email, phone, password, address } = data
 
@@ -69,7 +71,7 @@ const createUser = async function (req, res) {
 
 
         let userAddress = JSON.parse(address)
-        
+
         data.address = userAddress
 
         if (!isValid(data.address.shipping && data.address.billing)) {
@@ -168,7 +170,7 @@ const userLogin = async function (req, res) {
             exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60
         }, 'ProjectNo-5')
 
-        return res.status(200).send({ status: true, message: "Login Successful", data: { userId:userId,Token: token } });
+        return res.status(200).send({ status: true, message: "Login Successful", data: { userId: userId, Token: token } });
 
     } catch (err) {
 
@@ -308,7 +310,7 @@ const updateUserDetails = async function (req, res) {
 
 
         if (address) {
-            
+
             address = JSON.parse(userDetails.address)
 
             if (!isValid(address)) {

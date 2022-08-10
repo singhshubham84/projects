@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController')
 const productController = require('../controllers/productController')
-const auth = require('../middleware/auth')
 const cartController=require('../controllers/cartControllers')
 const orderController=require('../controllers/orderControllers')
-
+const auth = require('../middleware/auth')
 /*_____________________-----===> API FOR USER <====-----______________________________*/ 
 
 router.post("/register", userController.createUser)
@@ -17,8 +16,8 @@ router.put('/user/:userId/profile',auth.userAuthentication, userController.updat
 
 router.post("/products", productController.createProduct)
 router.get('/products',productController.getAllProducts)
-router.get('/products/:productId',productController.getProductById)
 router.put('/products/:productId',productController.updateProduct)
+router.get('/products/:productId',productController.getProductById)
 router.delete('/products/:productId',productController.deleteProduct)
 
 /**________________________----===> CART API <====----________________________________________ */

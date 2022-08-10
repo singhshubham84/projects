@@ -18,7 +18,7 @@ const createOrder = async function (req, res) {
             return res.status(404).send({ status: false, msg: " user not found" })
         }
         if (userId != userIdFromToken) {
-            return res.status(403).send({ status: false, message: `authentication fail ` })
+            return res.status(403).send({ status: false, message: `authenrizaation fail ` })
         }
 
         let data = req.body;
@@ -99,7 +99,7 @@ const updateOrder = async function (req, res) {
             return res.status(400).send({ status: false, msg: ' productId is invalid' })
         }
         const findOrder = await orderModel.findById(orderId)
-        console.log(findOrder)
+        // console.log(findOrder)
         if (!findOrder) {
             return res.status(400).send({ status: false, msg: 'orderId is wrong' })
         }
@@ -156,7 +156,7 @@ const updateOrder = async function (req, res) {
 
     }
     catch (err) {
-        return res.status(500).send({ message: err.message })
+        return res.status(500).send({status: false, message: err.message })
     }
 }
 

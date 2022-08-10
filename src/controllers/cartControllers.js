@@ -1,7 +1,7 @@
 const userModel = require("../models/userModel")
 const productModel = require("../models/productModel")
 const cartModel = require("../models/cartModel")
-const { isValid,isValidObjectId, isValidRequestBody } = require("../validator/validator")
+const { isValid, isValidObjectId, isValidRequestBody } = require("../validator/validator")
 
 
 
@@ -65,15 +65,15 @@ const createCart = async function (req, res) {
             return res.status(200).send({ status: true, message: "data updated", data: cartUpdate })
         }
     } catch (err) {
-        console.log(err)
-        res.status(500).send({ status: false, message: err.message })
+        
+       return res.status(500).send({ status: false, message: err.message })
     }
 }
 
 
 
 const updateCart = async function (req, res) {
-    try { 
+    try {
 
         let userId = req.params.userId;
         let data = req.body
@@ -108,7 +108,7 @@ const updateCart = async function (req, res) {
         }
 
         // checking if cart is present or not
-        let cart = await cartModel.findOne({_id: cartId});
+        let cart = await cartModel.findOne({ _id: cartId });
         if (!cart) {
             return res.status(400).send({ status: false, message: `No cart found with this ${userId} userId` });
         }
@@ -117,8 +117,8 @@ const updateCart = async function (req, res) {
         if (cart.items.length == 0) {
             return res.status(400).send({ status: false, message: "Cart is empty" });
         }
-        
-        let findProduct = await productModel.findById({ _id:productId })
+
+        let findProduct = await productModel.findById({ _id: productId })
         if (!findProduct) {
             return res.status(404).send({ status: false, message: "No product found with this product Id" })
         }
@@ -169,7 +169,7 @@ const getCartData = async function (req, res) {
         const userFind = await userModel.findById({ _id: userId })
         if (!userFind) { return res.status(400).send({ status: false, message: `User does not exists by this userId ` }) }
 
-        if (userFind._id.toString() != userIdFromToken) { return res.status(403).send({ status: false, message: `authentication fail ` }) }
+        if (userFind._id.toString() != userIdFromToken) { return res.status(403).send({ status: false, message: `authenrization fail ` }) }
 
         const cartFind = await cartModel.findOne({ userId: userId })
 
@@ -188,21 +188,30 @@ const deleteCart = async function (req, res) {
 
         const userIdFromToken = req.userId
 
-        if (!isValidObjectId(userId)) { return res.status(400).send({ status: false, message: "Invalid userId in params." }) }
+        if (!isValidObjectId(userId)) {
+            return res.status(400).send({ status: false, message: "Invalid userId in params." })
+        }
 
         const userFind = await userModel.findOne({ _id: userId })
-        if (!userFind) { return res.status(400).send({ status: false, message: `User does not exists by this userId ` }) }
+        if (!userFind) {
+            return res.status(400).send({ status: false, message: `User does not exists by this userId ` })
+        }
 
-        if (userFind._id.toString()!= userIdFromToken) { return res.status(403).send({ status: false, message: `authentication fail` }) }
+        if (userFind._id.toString() != userIdFromToken) {
+            return res.status(403).send({ status: false, message: `authentization fail` })
+        }
 
         const cartFind = await cartModel.findOne({ userId: userId })
-        if (!cartFind) { return res.status(400).send({ status: false, message: `Cart does not exists by this userId ` }) }
+        if (!cartFind) {
+            return res.status(400).send({ status: false, message: `Cart does not exists by this userId ` })
+        }
 
         const deletedData = await cartModel.findOneAndUpdate({ userId: userId }, { $set: { items: [], totalPrice: 0, totalItems: 0 } }, { new: true })
 
         return res.status(200).send({ status: true, message: "Cart successfully deleted", data: deletedData })
 
-    } catch (err) {
+    }
+    catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
